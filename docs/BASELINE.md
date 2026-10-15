@@ -48,7 +48,7 @@ Python DEMKit (port 3001)
 Browser receives updated state
 ```
 
-This is the **documented architecture**. On 15 October, `Get-NetTCPConnection -State Listen -LocalPort 3001,3002` returned no results. Neither port had a listener **at the time of that check**. This is not a failed application test unless the servers were expected to be running. Start both services, then repeat the listener check.
+This is the **documented architecture**. An initial port check returned no rows when service state was unknown. A later PowerShell check on 15 October 2026 showed **port 3001 listening on 0.0.0.0 (PID 10244)** and **port 3002 listening on :: (PID 27184)**. These are confirmed listeners, but their process identities and correct application behaviour still need verification.
 
 ## 3. How the Windows development version was started
 
@@ -127,7 +127,7 @@ Open **http://localhost:3002** in a browser. The inherited design starts paused;
 | Placed devices | Interface screenshot contains EV charger / solar / battery-style device icons placed in houses | **Observed visually; behaviour not formally validated** |
 | Running state | Later screenshot shows simulated date/time and energy readings | **Observed visually; accuracy not formally validated** |
 | Device controls and energy calculations | Individual operations and numerical correctness | **Not yet fully tested — BK-03** |
-| Backend ports | First PowerShell listener check returned **no rows** on ports 3001/3002 | **Observed while process state was unknown; repeat with both servers running** |
+| Backend ports | Later check: **3001 listening** (`0.0.0.0`, PID 10244); **3002 listening** (`::`, PID 27184) | **Verified listening; process identities and app responses not yet confirmed** |
 | Clean installation on another machine | Not performed | **Not tested** |
 | macOS / Linux | Not performed | **Not tested** |
 
@@ -167,13 +167,19 @@ Get-NetTCPConnection -State Listen -LocalPort 3001,3002 -ErrorAction SilentlyCon
 
 Also capture a startup log (with any personal values or tokens removed) and a screenshot of the active app.
 
+
+### Additional local-terminal observation (15 October 2026)
+
+Running `git rev-parse HEAD` and `.\\.venv\\Scripts\\python.exe --version` from `D:\\Saxion Programme\\Demkit-simulation app` failed, because that is **the parent directory**, not the Git project root. The correct project root is `D:\\Saxion Programme\\Demkit-simulation app\\touchtable-tool`. This is a current-working-directory mistake, **not evidence of a broken Python installation or repository**. Repeat the version and commit checks after `cd` into the project root.
+
 ## 7. When BK-01 is complete
 
 - [x] Baseline report created with environment, architecture, and startup instructions
 - [x] Known setup problems documented separately from confirmed features
 - [x] Windows version/build recorded from PowerShell screenshot
 - [ ] Confirm Python 3.12.10 via terminal; record pip version and **local tested commit**
-- [ ] Confirm ports 3001/3002 are listening during a fresh start (first check showed no listeners)
+- [x] Confirm ports 3001/3002 have listeners during a later run (PID 10244 / 27184)
+- [ ] Confirm listener process names and successful application responses
 - [ ] Screenshot or issue attachment linked as evidence
 - [ ] Startup warnings checked and documented from a fresh run
 - [ ] Report reviewed, merged into `main`, and [issue #3](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/3) closed
