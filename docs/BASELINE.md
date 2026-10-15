@@ -17,7 +17,7 @@
 | Node.js | **v22.15.0** | Local terminal output |
 | npm | **v11.12.1** | Local terminal output |
 | pip | **26.2.1**, Python 3.12 virtual environment | Confirmed by `.\.venv\Scripts\python.exe -m pip --version` (15 Oct 2026) |
-| Git | Installed; version **to record** | Repository cloned and pushed |
+| Git | **2.45.1.windows.1** | Confirmed by `git --version` in local PowerShell (15 Oct 2026) |
 | Local checkout | `D:\Saxion Programme\Demkit-simulation app\touchtable-tool` | Local terminal output |
 | Local Git HEAD at metadata capture | [`ac566ff74f1f401d49c5890af5905575b85ed6e2`](https://github.com/kiarashdelavar/demkit-microgrid-simulator/commit/ac566ff74f1f401d49c5890af5905575b85ed6e2) on `docs/educational-feature-ideas`; clean working tree | Confirmed by `git rev-parse HEAD`, `git branch --show-current`, and empty `git status --short` output (15 Oct 2026). This is the **recorded local HEAD**, not a verified SHA for the earlier demo run. |
 | Database | No InfluxDB integration planned for this phase | Assignment scope decision |
@@ -48,7 +48,7 @@ Python DEMKit (port 3001)
 Browser receives updated state
 ```
 
-This is the **documented architecture**. An initial port check returned no rows when service state was unknown. A later PowerShell check on 15 October 2026 showed **port 3001 listening on 0.0.0.0 (PID 10244)** and **port 3002 listening on :: (PID 27184)**. These are confirmed listeners, but their process identities and correct application behaviour still need verification.
+This is the **documented architecture**. An initial port check returned no rows when service state was unknown. A later PowerShell check on 15 October 2026 showed **port 3001 listening on 0.0.0.0 (PID 10244)** and **port 3002 listening on :: (PID 27184)**. The listener process identities were subsequently confirmed as `python` for port 3001 and `node` for port 3002. This validates process identity and listening status, not complete HTTP or simulation behaviour.
 
 ## 3. How the Windows development version was started
 
@@ -127,7 +127,7 @@ Open **http://localhost:3002** in a browser. The inherited design starts paused;
 | Placed devices | Interface screenshot contains EV charger / solar / battery-style device icons placed in houses | **Observed visually; behaviour not formally validated** |
 | Running state | Later screenshot shows simulated date/time and energy readings | **Observed visually; accuracy not formally validated** |
 | Device controls and energy calculations | Individual operations and numerical correctness | **Not yet fully tested — BK-03** |
-| Backend ports | Later check: **3001 listening** (`0.0.0.0`, PID 10244); **3002 listening** (`::`, PID 27184) | **Verified listening; process identities and app responses not yet confirmed** |
+| Backend ports | **3001 listening** (`0.0.0.0`, PID 10244 → `python`); **3002 listening** (`::`, PID 27184 → `node`) | Confirmed by `Get-NetTCPConnection` and `Get-Process` on Windows (15 Oct 2026). Full HTTP and simulation correctness not yet tested. |
 | Clean installation on another machine | Not performed | **Not tested** |
 | macOS / Linux | Not performed | **Not tested** |
 
@@ -147,8 +147,8 @@ Evidence still needed: attach at least one screenshot of the running application
 Operating system, Python, pip, Node.js, npm, branch and current HEAD have been recorded. To finish evidence collection, run these remaining checks from the repository root:
 
 ```powershell
-git --version
-Get-Process -Id 10244,27184 -ErrorAction SilentlyContinue | Select-Object Id, ProcessName
+git --version  # Confirmed: 2.45.1.windows.1
+Get-NetTCPConnection -State Listen -LocalPort 3001,3002 | ForEach-Object { $p = Get-Process -Id $_.OwningProcess; [PSCustomObject]@{Port=$_.LocalPort; Process=$p.ProcessName; PID=$_.OwningProcess} }  # Confirmed: 3001/python, 3002/node
 ```
 
 While both application services are running, check the listeners:
@@ -173,7 +173,8 @@ Running `git rev-parse HEAD` and `.\\.venv\\Scripts\\python.exe --version` from 
 - [x] Confirm Python 3.12.10 and pip 26.2.1 via terminal, plus record local Git HEAD and branch
 - [ ] Verify whether the recorded local HEAD is the same revision used for the original demo, or log a fresh run against that revision
 - [x] Confirm ports 3001/3002 have listeners during a later run (PID 10244 / 27184)
-- [ ] Confirm listener process names and successful application responses
+- [x] Confirm port listener process names (`python` on 3001, `node` on 3002)
+- [ ] Confirm application HTTP responses and simulation behaviour in the planned BK-03 smoke tests
 - [ ] Screenshot or issue attachment linked as evidence
 - [ ] Startup warnings checked and documented from a fresh run
 - [ ] Report reviewed, merged into `main`, and [issue #3](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/3) closed
