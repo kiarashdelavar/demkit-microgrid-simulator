@@ -1,7 +1,7 @@
 # BK-01 — Working DEMKit Development Baseline
 
 **Recorded:** 15 October 2026  
-**Status:** Draft — missing machine details and a repeatable test run  
+**Status:** Draft — software versions and network listeners recorded; application evidence and startup warnings still pending  
 **Related issue:** [#3 — Record the current working DEMKit setup](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/3)  
 **Purpose:** Keep a record of the currently working Windows setup before changing dependencies, paths, the launcher, or the energy models.
 
@@ -12,14 +12,14 @@
 | Item | Value | Evidence / confidence |
 | --- | --- | --- |
 | Operating system | **Windows 11 Pro, version 10.0.26300, build 26300** | Confirmed by PowerShell `Get-CimInstance Win32_OperatingSystem` screenshot (15 Oct 2026) |
-| Python | **3.12.10** shown as selected `.venv` interpreter in VS Code; CLI verification pending | VS Code status bar screenshot (15 Oct 2026) |
+| Python | **3.12.10** in `.venv/` | Confirmed by `.\.venv\Scripts\python.exe --version` from repository root (15 Oct 2026) |
 | Additional Python | Python 3.13.5 installed but not used for DEMKit | Local Python launcher output |
 | Node.js | **v22.15.0** | Local terminal output |
 | npm | **v11.12.1** | Local terminal output |
-| pip | Installed in the Python virtual environment; version **to recheck** | Local terminal output |
+| pip | **26.2.1**, Python 3.12 virtual environment | Confirmed by `.\.venv\Scripts\python.exe -m pip --version` (15 Oct 2026) |
 | Git | Installed; version **to record** | Repository cloned and pushed |
 | Local checkout | `D:\Saxion Programme\Demkit-simulation app\touchtable-tool` | Local terminal output |
-| Local Git commit tested | **To record:** `git rev-parse HEAD` | Do not substitute a remote branch SHA for the tested commit |
+| Local Git HEAD at metadata capture | [`ac566ff74f1f401d49c5890af5905575b85ed6e2`](https://github.com/kiarashdelavar/demkit-microgrid-simulator/commit/ac566ff74f1f401d49c5890af5905575b85ed6e2) on `docs/educational-feature-ideas`; clean working tree | Confirmed by `git rev-parse HEAD`, `git branch --show-current`, and empty `git status --short` output (15 Oct 2026). This is the **recorded local HEAD**, not a verified SHA for the earlier demo run. |
 | Database | No InfluxDB integration planned for this phase | Assignment scope decision |
 
 **Important compatibility note:** `workspace/touchtable/web/package.json` declares Node 11.15.0/npm 6.7.0, but the application interface was opened on a machine using Node 22.15.0/npm 11.12.1. This is an *observed local run*, **not** a verified compatibility guarantee.
@@ -144,18 +144,11 @@ Evidence still needed: attach at least one screenshot of the running application
 
 ## 6. Details still to collect on the laptop
 
-Run these commands from the repository root and add the results to section 1:
+Operating system, Python, pip, Node.js, npm, branch and current HEAD have been recorded. To finish evidence collection, run these remaining checks from the repository root:
 
 ```powershell
-(Get-CimInstance Win32_OperatingSystem) | Select-Object Caption, Version, BuildNumber
-.\.venv\Scripts\python.exe --version
-.\.venv\Scripts\python.exe -m pip --version
-node --version
-npm --version
 git --version
-git rev-parse HEAD
-git branch --show-current
-git status --short
+Get-Process -Id 10244,27184 -ErrorAction SilentlyContinue | Select-Object Id, ProcessName
 ```
 
 While both application services are running, check the listeners:
@@ -170,14 +163,15 @@ Also capture a startup log (with any personal values or tokens removed) and a sc
 
 ### Additional local-terminal observation (15 October 2026)
 
-Running `git rev-parse HEAD` and `.\\.venv\\Scripts\\python.exe --version` from `D:\\Saxion Programme\\Demkit-simulation app` failed, because that is **the parent directory**, not the Git project root. The correct project root is `D:\\Saxion Programme\\Demkit-simulation app\\touchtable-tool`. This is a current-working-directory mistake, **not evidence of a broken Python installation or repository**. Repeat the version and commit checks after `cd` into the project root.
+Running `git rev-parse HEAD` and `.\\.venv\\Scripts\\python.exe --version` from `D:\\Saxion Programme\\Demkit-simulation app` failed, because that is **the parent directory**, not the Git project root. The correct project root is `D:\\Saxion Programme\\Demkit-simulation app\\touchtable-tool`. This is a current-working-directory mistake, **not evidence of a broken Python installation or repository**. The version and commit checks were subsequently repeated successfully after changing into the repository root.
 
 ## 7. When BK-01 is complete
 
 - [x] Baseline report created with environment, architecture, and startup instructions
 - [x] Known setup problems documented separately from confirmed features
 - [x] Windows version/build recorded from PowerShell screenshot
-- [ ] Confirm Python 3.12.10 via terminal; record pip version and **local tested commit**
+- [x] Confirm Python 3.12.10 and pip 26.2.1 via terminal, plus record local Git HEAD and branch
+- [ ] Verify whether the recorded local HEAD is the same revision used for the original demo, or log a fresh run against that revision
 - [x] Confirm ports 3001/3002 have listeners during a later run (PID 10244 / 27184)
 - [ ] Confirm listener process names and successful application responses
 - [ ] Screenshot or issue attachment linked as evidence
