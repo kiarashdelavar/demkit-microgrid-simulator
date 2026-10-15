@@ -15,3 +15,5 @@ touchtable_composed.py
 **/stats/
 **/cache/
 workspace/touchtable/model/data/host/
+
+.venv/
