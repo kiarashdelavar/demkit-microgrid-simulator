@@ -11,8 +11,8 @@
 
 | Item | Value | Evidence / confidence |
 | --- | --- | --- |
-| Operating system | Windows — exact edition/build **to record** | Windows VS Code/PowerShell screenshots |
-| Python | Python **3.12** virtual environment, `.venv/` | Local setup conversation; patch version to verify |
+| Operating system | **Windows 11 Pro, version 10.0.26300, build 26300** | Confirmed by PowerShell `Get-CimInstance Win32_OperatingSystem` screenshot (15 Oct 2026) |
+| Python | **3.12.10** shown as selected `.venv` interpreter in VS Code; CLI verification pending | VS Code status bar screenshot (15 Oct 2026) |
 | Additional Python | Python 3.13.5 installed but not used for DEMKit | Local Python launcher output |
 | Node.js | **v22.15.0** | Local terminal output |
 | npm | **v11.12.1** | Local terminal output |
@@ -48,7 +48,7 @@ Python DEMKit (port 3001)
 Browser receives updated state
 ```
 
-This is the **documented architecture**. Rechecking the two port listeners during a fresh run is still required.
+This is the **documented architecture**. On 15 October, `Get-NetTCPConnection -State Listen -LocalPort 3001,3002` returned no results. Neither port had a listener **at the time of that check**. This is not a failed application test unless the servers were expected to be running. Start both services, then repeat the listener check.
 
 ## 3. How the Windows development version was started
 
@@ -127,7 +127,7 @@ Open **http://localhost:3002** in a browser. The inherited design starts paused;
 | Placed devices | Interface screenshot contains EV charger / solar / battery-style device icons placed in houses | **Observed visually; behaviour not formally validated** |
 | Running state | Later screenshot shows simulated date/time and energy readings | **Observed visually; accuracy not formally validated** |
 | Device controls and energy calculations | Individual operations and numerical correctness | **Not yet fully tested — BK-03** |
-| Backend ports | Port 3001 and port 3002 are specified by the handover | **Listener checks pending** |
+| Backend ports | First PowerShell listener check returned **no rows** on ports 3001/3002 | **Observed while process state was unknown; repeat with both servers running** |
 | Clean installation on another machine | Not performed | **Not tested** |
 | macOS / Linux | Not performed | **Not tested** |
 
@@ -171,8 +171,9 @@ Also capture a startup log (with any personal values or tokens removed) and a sc
 
 - [x] Baseline report created with environment, architecture, and startup instructions
 - [x] Known setup problems documented separately from confirmed features
-- [ ] Exact Windows version, Python patch version, pip version, and **local tested commit** recorded
-- [ ] Confirm ports 3001/3002 are listening during a fresh start
+- [x] Windows version/build recorded from PowerShell screenshot
+- [ ] Confirm Python 3.12.10 via terminal; record pip version and **local tested commit**
+- [ ] Confirm ports 3001/3002 are listening during a fresh start (first check showed no listeners)
 - [ ] Screenshot or issue attachment linked as evidence
 - [ ] Startup warnings checked and documented from a fresh run
 - [ ] Report reviewed, merged into `main`, and [issue #3](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/3) closed
