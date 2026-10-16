@@ -7,6 +7,8 @@ __pycache__/
 *.log
 *.bak
 .env
+.env.*
+!.env.example
 usrconf.py
 usrconf_new.py
 usrconf.py.misc
