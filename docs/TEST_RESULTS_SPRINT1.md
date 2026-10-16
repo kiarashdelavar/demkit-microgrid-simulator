@@ -2,7 +2,7 @@
 
 **Date started:** 16 October 2026  
 **Task:** [BK-03 — Test the existing simulation](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/5)  
-**Status:** In progress — T-01 to T-07 passed; remaining tests pending
+**Status:** In progress — T-01 to T-07 passed; T-08 needs investigation; T-09 to T-12 not tested
 
 ## 1. Why I am doing these tests
 
@@ -69,7 +69,7 @@ Copy the commit ID into section 2. If there are local code changes, record them 
 - **Blocked:** I could not test it, for example because the needed touch hardware was missing.
 - **Not tested:** I have not tried it yet.
 
-**Important:** T-01 to T-07 have passed their manual checks. For T-07, the tester reported that manual charge, manual discharge, Solar mode, Smart mode, and charge limits all passed. No numerical SoC readings or backend logs were submitted, so this is a manual behaviour check rather than an independent validation of the battery calculations.
+**Important:** T-01 to T-07 passed manual checks. T-08 worked visibly (two batteries added, valid slot display, simulation continued and levels stayed in range), **but the tester answered Yes to terminal errors**. T-08 needs the exact error text before it can be marked as passed. The remaining tests are not yet completed.
 
 | ID | What I am testing | Expected result (short) | Actual result | Status | Evidence |
 | --- | --- | --- | --- | --- | --- |
@@ -80,7 +80,7 @@ Copy the commit ID into section 2. If there are local code changes, record them 
 | T-05 | Coins and house slots | Coins/slots change as expected; limits work | Coins were deducted correctly for a purchased device; the counter reached 3/3; an extra device was rejected without losing coins; the 10-coin upgrade increased slot capacity. No other problems were reported. | **Pass — based on manual tester report** | User submitted Yes for all five checks and None for notes on 16 Oct 2026. Exact balance numbers/screenshots not recorded. |
 | T-06 | Learning goal reward | Goal reward is added only once | Tested Goal 1. Placing the EV unlocked the reward, claiming gave the correct coins, claiming twice was prevented, and the next goal became available. No other problems noticed. | **Pass — based on manual tester report** | User reported Yes for all four checks and no additional observations on 16 Oct 2026. Goal 1 is +100 coins according to gamefication.js; exact before/after balances and screenshot not recorded. |
 | T-07 | Battery controls | Modes change the behaviour within limits | Tester reported that Manual +, Manual −, Solar mode, Smart mode, and battery charge limits all worked as expected. No other issues reported. | **Pass — based on manual tester report** | User submitted five Pass results and None for notes. Detailed SoC/power readings and screenshots were not provided. |
-| T-08 | More than one battery | No invalid battery state or crash | To fill in | Not tested | — |
+| T-08 | More than one battery | No invalid battery state or crash | I could add two batteries to the same house. Both appeared, the slots updated, the simulation kept running and charge levels stayed between 0% and 100%. However, I answered **Yes** when asked whether Python or Node.js showed errors. I did not include the error message. | **Needs investigation — terminal errors reported** | Tester submitted Yes/Yes/Yes/Yes/**Yes to errors**, with no extra notes. Need terminal error text and whether the message appeared while adding batteries. Not a confirmed clean pass. |
 | T-09 | Overload and cable repair | Warning appears and cable can recover | To fill in | Not tested | — |
 | T-10 | Refresh or reconnect | Page shows the current simulation state | To fill in | Not tested | — |
 | T-11 | Stop backend while web server runs | Failure is visible, not a fake success | To fill in | Not tested | — |
@@ -202,6 +202,7 @@ I will create a separate GitHub bug issue for a significant problem. I will not 
 | T-05 | 16 Oct 2026 | I tested buying a device, filling all three house slots, trying to add a fourth device, and upgrading the slots. Coins and slot limits behaved as expected. The rejected action did not cost coins and the upgrade cost 10 coins. I noticed no other problems. | Direct test report (five Yes answers, no additional observations); screenshot not attached | — |
 | T-06 | 16 Oct 2026 | I tested Goal 1 by completing the EV activity. The reward unlocked, the correct coins were added, and I could not claim it a second time. The next goal appeared. I did not notice any other problems. | Direct manual tester report (four Yes answers; no additional observations) | — |
 | T-07 | 16 Oct 2026 | I tried Manual +, Manual −, Solar mode and Smart mode. All four behaved as expected, and the battery stayed within its charge limits. I did not notice any other problems. | Direct tester report (five passes, no extra observations); screenshot/log not attached | — |
+| T-08 | 16 Oct 2026 | I added two batteries to one house. The interface and simulation appeared to work, but I reported terminal errors. I need to copy the exact message and check if it relates to the batteries. | Direct tester report; error text and screenshot not supplied yet | Pending error review |
 | — | — | Add notes here after testing | — | — |
 
 ## 7. What I already know from the handover
