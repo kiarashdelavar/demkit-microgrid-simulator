@@ -2,7 +2,7 @@
 
 **Date started:** 16 October 2026  
 **Task:** [BK-03 — Test the existing simulation](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/5)  
-**Status:** In progress — tests still need to be run
+**Status:** In progress — T-01 browser startup observed; remaining tests pending
 
 ## 1. Why I am doing these tests
 
@@ -69,11 +69,11 @@ Copy the commit ID into section 2. If there are local code changes, record them 
 - **Blocked:** I could not test it, for example because the needed touch hardware was missing.
 - **Not tested:** I have not tried it yet.
 
-**Important:** These results all start as **Not tested**. The screenshots of the earlier demo show that the interface opened, but they are not a full test of all features.
+**Important:** T-01 is now marked **Pass (browser startup)** based on a fresh screenshot and the tester's confirmation on 16 October 2026. This does not verify internal energy calculations or complete the other tests.
 
 | ID | What I am testing | Expected result (short) | Actual result | Status | Evidence |
 | --- | --- | --- | --- | --- | --- |
-| T-01 | Start DEMKit and the browser | Both services run and the page loads | To fill in | Not tested | — |
+| T-01 | Start DEMKit and the browser | Both services run and the page loads | Browser loaded with the neighbourhood view, visible houses, power/load numbers, budget (300 coins) and simulation time (01 Jan 03:45). Tester confirmed it works. | **Pass — UI loads** | Screenshot supplied in chat on 16 Oct 2026; attach to GitHub issue #5 for permanent evidence. Terminal startup warnings and exact test commit still need recording. |
 | T-02 | Start, pause and resume | Simulation time moves only when running | To fill in | Not tested | — |
 | T-03 | Add and remove devices | Device changes appear correctly | To fill in | Not tested | — |
 | T-04 | Move an EV to another house | EV leaves old house and appears in new house | To fill in | Not tested | — |
@@ -195,6 +195,7 @@ I will create a separate GitHub bug issue for a significant problem. I will not 
 
 | Test ID | Date | What happened | Screenshot / log | Follow-up issue |
 | --- | --- | --- | --- | --- |
+| T-01 | 16 Oct 2026 | Opened the app at localhost:3002. Screenshot showed the neighbourhood, three houses in the visible crop (houses 1–3), power readings 173 W / 107 W / 138 W, transformer current 1.4 A and a 300-coin budget. The tester wrote 'ok its working'. The other houses are outside the provided screenshot crop. | Screenshot shared in this conversation; upload to issue #5 pending | — |
 | — | — | Add notes here after testing | — | — |
 
 ## 7. What I already know from the handover
