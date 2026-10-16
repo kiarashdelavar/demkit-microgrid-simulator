@@ -2,7 +2,7 @@
 
 **Date started:** 16 October 2026  
 **Task:** [BK-03 — Test the existing simulation](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/5)  
-**Status:** In progress — T-01 and T-02 passed; remaining tests pending
+**Status:** In progress — T-01, T-02 and T-03 passed; remaining tests pending
 
 ## 1. Why I am doing these tests
 
@@ -69,13 +69,13 @@ Copy the commit ID into section 2. If there are local code changes, record them 
 - **Blocked:** I could not test it, for example because the needed touch hardware was missing.
 - **Not tested:** I have not tried it yet.
 
-**Important:** T-01 passed for browser startup based on a fresh screenshot. T-02 passed based on the tester's direct report that time advanced, stopped during pause, and advanced again after resuming. These tests do not verify energy calculations or the other device features.
+**Important:** T-01 passed for browser startup based on a fresh screenshot. T-02 passed based on the tester's direct clock test. T-03 passed for adding/removing EV charger, solar panel and battery, with no relevant backend errors reported. These are manual results; detailed device energy calculations and every other device type are not verified yet.
 
 | ID | What I am testing | Expected result (short) | Actual result | Status | Evidence |
 | --- | --- | --- | --- | --- | --- |
 | T-01 | Start DEMKit and the browser | Both services run and the page loads | Browser loaded with the neighbourhood view, visible houses, power/load numbers, budget (300 coins) and simulation time (01 Jan 03:45). Tester confirmed it works. | **Pass — UI loads** | Screenshot supplied in chat on 16 Oct 2026; attach to GitHub issue #5 for permanent evidence. Terminal startup warnings and exact test commit still need recording. |
 | T-02 | Start, pause and resume | Simulation time moves only when running | Time moved while playing, stayed still while paused, and moved again after resume. No extra problems reported. | **Pass — based on tester report** | Tester submitted Yes/Yes/Yes and 'None' for observations in chat on 16 Oct 2026. No separate timing/log screenshot recorded. |
-| T-03 | Add and remove devices | Device changes appear correctly | To fill in | Not tested | — |
+| T-03 | Add and remove devices | Device changes appear correctly | EV charger, solar panel and battery were each added and removed successfully. Tester checked the backend terminals and reported no relevant errors. | **Pass — tested device types** | Direct tester report on 16 Oct 2026 (EV: pass, solar: pass, battery: pass, backend: no-errors, notes: none). No screenshot/log attached yet; exact simulation values were not verified. |
 | T-04 | Move an EV to another house | EV leaves old house and appears in new house | To fill in | Not tested | — |
 | T-05 | Coins and house slots | Coins/slots change as expected; limits work | To fill in | Not tested | — |
 | T-06 | Learning goal reward | Goal reward is added only once | To fill in | Not tested | — |
@@ -197,6 +197,7 @@ I will create a separate GitHub bug issue for a significant problem. I will not 
 | --- | --- | --- | --- | --- |
 | T-01 | 16 Oct 2026 | Opened the app at localhost:3002. Screenshot showed the neighbourhood, three houses in the visible crop (houses 1–3), power readings 173 W / 107 W / 138 W, transformer current 1.4 A and a 300-coin budget. The tester wrote 'ok its working'. The other houses are outside the provided screenshot crop. | Screenshot shared in this conversation; upload to issue #5 pending | — |
 | T-02 | 16 Oct 2026 | I checked the simulation clock while playing, paused, and playing again. It advanced, stopped, and continued as expected. I did not notice any other problems. | Direct test report in chat (Yes/Yes/Yes, no other observations) | — |
+| T-03 | 16 Oct 2026 | I added and removed an EV charger, a solar panel and a battery. All three worked as expected. I checked the backend output and saw no relevant errors. | Direct tester report (three passes; no backend errors); screenshots or logs not attached | — |
 | — | — | Add notes here after testing | — | — |
 
 ## 7. What I already know from the handover
