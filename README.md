@@ -132,6 +132,7 @@ Roadmap order and scope are **proposed**, subject to supervisor feedback, techni
 - [Project plan, scope, and definition of done](docs/PROJECT_PLAN.md)
 - [System architecture](docs/ARCHITECTURE.md)
 - [Test strategy and baseline checklist](docs/TEST_PLAN.md)
+- [Sprint 1 manual simulation test results (in progress)](docs/TEST_RESULTS_SPRINT1.md)
 - [Local installation and configuration guide](docs/CONFIGURATION_GUIDE.md)
 - [Prioritised product backlog](backlog/PRODUCT_BACKLOG.md)
 - [Previous developer's technical handover](HANDOVER.md)
