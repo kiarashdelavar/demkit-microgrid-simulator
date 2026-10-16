@@ -2,7 +2,7 @@
 
 **Date started:** 16 October 2026  
 **Task:** [BK-03 — Test the existing simulation](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/5)  
-**Status:** In progress — T-01 browser startup observed; remaining tests pending
+**Status:** In progress — T-01 and T-02 passed; remaining tests pending
 
 ## 1. Why I am doing these tests
 
@@ -69,12 +69,12 @@ Copy the commit ID into section 2. If there are local code changes, record them 
 - **Blocked:** I could not test it, for example because the needed touch hardware was missing.
 - **Not tested:** I have not tried it yet.
 
-**Important:** T-01 is now marked **Pass (browser startup)** based on a fresh screenshot and the tester's confirmation on 16 October 2026. This does not verify internal energy calculations or complete the other tests.
+**Important:** T-01 passed for browser startup based on a fresh screenshot. T-02 passed based on the tester's direct report that time advanced, stopped during pause, and advanced again after resuming. These tests do not verify energy calculations or the other device features.
 
 | ID | What I am testing | Expected result (short) | Actual result | Status | Evidence |
 | --- | --- | --- | --- | --- | --- |
 | T-01 | Start DEMKit and the browser | Both services run and the page loads | Browser loaded with the neighbourhood view, visible houses, power/load numbers, budget (300 coins) and simulation time (01 Jan 03:45). Tester confirmed it works. | **Pass — UI loads** | Screenshot supplied in chat on 16 Oct 2026; attach to GitHub issue #5 for permanent evidence. Terminal startup warnings and exact test commit still need recording. |
-| T-02 | Start, pause and resume | Simulation time moves only when running | To fill in | Not tested | — |
+| T-02 | Start, pause and resume | Simulation time moves only when running | Time moved while playing, stayed still while paused, and moved again after resume. No extra problems reported. | **Pass — based on tester report** | Tester submitted Yes/Yes/Yes and 'None' for observations in chat on 16 Oct 2026. No separate timing/log screenshot recorded. |
 | T-03 | Add and remove devices | Device changes appear correctly | To fill in | Not tested | — |
 | T-04 | Move an EV to another house | EV leaves old house and appears in new house | To fill in | Not tested | — |
 | T-05 | Coins and house slots | Coins/slots change as expected; limits work | To fill in | Not tested | — |
@@ -196,6 +196,7 @@ I will create a separate GitHub bug issue for a significant problem. I will not 
 | Test ID | Date | What happened | Screenshot / log | Follow-up issue |
 | --- | --- | --- | --- | --- |
 | T-01 | 16 Oct 2026 | Opened the app at localhost:3002. Screenshot showed the neighbourhood, three houses in the visible crop (houses 1–3), power readings 173 W / 107 W / 138 W, transformer current 1.4 A and a 300-coin budget. The tester wrote 'ok its working'. The other houses are outside the provided screenshot crop. | Screenshot shared in this conversation; upload to issue #5 pending | — |
+| T-02 | 16 Oct 2026 | I checked the simulation clock while playing, paused, and playing again. It advanced, stopped, and continued as expected. I did not notice any other problems. | Direct test report in chat (Yes/Yes/Yes, no other observations) | — |
 | — | — | Add notes here after testing | — | — |
 
 ## 7. What I already know from the handover
