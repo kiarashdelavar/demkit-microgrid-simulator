@@ -2,7 +2,7 @@
 
 **Date started:** 16 October 2026  
 **Task:** [BK-03 — Test the existing simulation](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/5)  
-**Status:** In progress — T-01 to T-07, T-09 and T-10 passed; T-08 needs investigation; T-11 failed; T-12 not tested
+**Status:** Test run finished — 10 passed, 1 failed (T-11), and 1 needs investigation (T-08). The follow-up problems are tracked separately.
 
 ## 1. Why I am doing these tests
 
@@ -69,7 +69,7 @@ Copy the commit ID into section 2. If there are local code changes, record them 
 - **Blocked:** I could not test it, for example because the needed touch hardware was missing.
 - **Not tested:** I have not tried it yet.
 
-**Important:** T-01 to T-07, T-09 and T-10 passed the reported manual checks. T-08 still needs clarification about earlier terminal errors. **T-11 failed:** stopping Python DEMKit left Node.js unable to connect, and a callback in `web/index.js:342` crashed when it read `res.statusCode` from an undefined response. This is tracked in [bug #12](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/12). T-12 remains untested.
+**Important:** All 12 tests now have an outcome. **10 passed** based on manual observations, **T-11 failed** because Node.js crashes when Python is stopped ([bug #12](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/12)), and **T-08 needs investigation** because terminal errors were reported without the message ([follow-up #13](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/13)). Completing this testing document does **not** mean the simulator is bug-free or ready for release.
 
 | ID | What I am testing | Expected result (short) | Actual result | Status | Evidence |
 | --- | --- | --- | --- | --- | --- |
@@ -80,11 +80,11 @@ Copy the commit ID into section 2. If there are local code changes, record them 
 | T-05 | Coins and house slots | Coins/slots change as expected; limits work | Coins were deducted correctly for a purchased device; the counter reached 3/3; an extra device was rejected without losing coins; the 10-coin upgrade increased slot capacity. No other problems were reported. | **Pass — based on manual tester report** | User submitted Yes for all five checks and None for notes on 16 Oct 2026. Exact balance numbers/screenshots not recorded. |
 | T-06 | Learning goal reward | Goal reward is added only once | Tested Goal 1. Placing the EV unlocked the reward, claiming gave the correct coins, claiming twice was prevented, and the next goal became available. No other problems noticed. | **Pass — based on manual tester report** | User reported Yes for all four checks and no additional observations on 16 Oct 2026. Goal 1 is +100 coins according to gamefication.js; exact before/after balances and screenshot not recorded. |
 | T-07 | Battery controls | Modes change the behaviour within limits | Tester reported that Manual +, Manual −, Solar mode, Smart mode, and battery charge limits all worked as expected. No other issues reported. | **Pass — based on manual tester report** | User submitted five Pass results and None for notes. Detailed SoC/power readings and screenshots were not provided. |
-| T-08 | More than one battery | No invalid battery state or crash | I could add two batteries to the same house. Both appeared, the slots updated, the simulation kept running and charge levels stayed between 0% and 100%. However, I answered **Yes** when asked whether Python or Node.js showed errors. I did not include the error message. | **Needs investigation — terminal errors reported** | Tester submitted Yes/Yes/Yes/Yes/**Yes to errors**, with no extra notes. Need terminal error text and whether the message appeared while adding batteries. Not a confirmed clean pass. |
+| T-08 | More than one battery | No invalid battery state or crash | I could add two batteries to the same house. Both appeared, the slots updated, the simulation kept running and charge levels stayed between 0% and 100%. However, I answered **Yes** when asked whether Python or Node.js showed errors. I did not include the error message. | **Needs investigation — terminal errors reported** | Tester submitted Yes/Yes/Yes/Yes/**Yes to errors**. Need exact error and timing before deciding whether it is a battery bug or unrelated InfluxDB warning. [Investigation #13](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/13). |
 | T-09 | Overload and cable repair | Warning appears and cable can recover | After receiving the overload and cable-restoration steps, I reported that they all worked. This covers the warning, cable overload/repair and recovery behaviour. I did not provide exact coin amounts or terminal messages. | **Pass — functional checks reported; logs pending** | Tester wrote 'they are all working' on 17 Oct 2026 in response to the T-09 steps. No screenshots, penalty values, or terminal logs were provided. |
 | T-10 | Refresh or reconnect | Page shows the current simulation state | Browser successfully refreshed; existing devices remained visible, coin balance was preserved, and the simulation continued working. No unusual behaviour reported. | **Pass — based on manual tester report** | Four Yes responses and Notes: None (17 Oct 2026). No independent screenshots or backend state comparison were provided. |
 | T-11 | Stop backend while web server runs | Failure is visible, not a fake success | After I stopped Python DEMKit, Node.js could not connect to port 3001. Instead of handling the failed request, the Node.js process crashed with a TypeError in index.js line 342. The user confirmed the web app stopped working. I have not yet tested recovery after restarting both services. | **Fail — Node.js crashes** | User supplied the Node.js stack trace: `TypeError: Cannot read properties of undefined (reading 'statusCode')` at `workspace/touchtable/web/index.js:342:29`, Node 22.15.0. [Bug #12](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/12). |
-| T-12 | Resize a device | Device value changes correctly, if supported | To fill in | Not tested | — |
+| T-12 | Resize a device | Device value changes correctly, if supported | I tested device resizing and reported that it worked. I noticed no other problems. | **Pass — based on manual tester report** | Tester submitted Result: pass, Notes: None on 17 Oct 2026. Specific device, before/after scaling values and hardware used were not recorded. |
 
 ## 5. Steps for each test
 
@@ -202,11 +202,11 @@ I will create a separate GitHub bug issue for a significant problem. I will not 
 | T-05 | 16 Oct 2026 | I tested buying a device, filling all three house slots, trying to add a fourth device, and upgrading the slots. Coins and slot limits behaved as expected. The rejected action did not cost coins and the upgrade cost 10 coins. I noticed no other problems. | Direct test report (five Yes answers, no additional observations); screenshot not attached | — |
 | T-06 | 16 Oct 2026 | I tested Goal 1 by completing the EV activity. The reward unlocked, the correct coins were added, and I could not claim it a second time. The next goal appeared. I did not notice any other problems. | Direct manual tester report (four Yes answers; no additional observations) | — |
 | T-07 | 16 Oct 2026 | I tried Manual +, Manual −, Solar mode and Smart mode. All four behaved as expected, and the battery stayed within its charge limits. I did not notice any other problems. | Direct tester report (five passes, no extra observations); screenshot/log not attached | — |
-| T-08 | 16 Oct 2026 | I added two batteries to one house. The interface and simulation appeared to work, but I reported terminal errors. I need to copy the exact message and check if it relates to the batteries. | Direct tester report; error text and screenshot not supplied yet | Pending error review |
+| T-08 | 16 Oct 2026 | I added two batteries to one house. The interface and simulation appeared to work, but I reported terminal errors. I still need the exact message to check whether it was related to the batteries or just a startup warning. | Direct tester report; error text and screenshot not supplied yet | [Investigation #13](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/13) |
 | T-09 | 17 Oct 2026 | I tested the grid overload and cable-restoration steps and reported that they all worked. I still need to save any terminal messages and the exact coin deduction if I want to check those separately. | Direct tester confirmation in chat ('they are all working'); no screenshot/log attached | — |
 | T-10 | 17 Oct 2026 | I refreshed the browser while the simulation was running. The page reloaded, existing devices and coin balance stayed the same, and the simulation continued working. I did not notice any other problems. | Direct tester report (four Yes responses, no additional observations); no screenshot attached | — |
 | T-11 | 17 Oct 2026 | I stopped the Python backend while testing what happens when the simulation loses its connection. Node.js crashed rather than showing a useful error. The issue comes from reading `res.statusCode` when the request has no response. I still need to test restarting the services after this failure. | Stack trace shared in chat, including `index.js:342:29` | [Bug #12](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/12) |
-| — | — | Add notes here after testing | — | — |
+| T-12 | 17 Oct 2026 | I tried resizing a device and reported that it worked. I did not notice any other problems. I have not written down the exact device, scaling values or whether I used a touchscreen. | Direct tester report (Pass; no additional observations) | — |
 
 ## 7. What I already know from the handover
 
@@ -214,13 +214,34 @@ The existing project includes EVs, solar panels, batteries, goals, budgets and c
 
 I do **not** need to set up InfluxDB for these tests.
 
-## 8. When BK-03 is done
+## 8. What I learned
 
-- [ ] I have tested T-01 through T-12, or explained clearly why a test was blocked.
-- [ ] I have filled in the actual results instead of leaving `Not tested`.
-- [ ] I have added screenshots or log evidence for important findings.
-- [ ] I have recorded any problems and created follow-up issues when needed.
-- [ ] I have written down the exact Git commit used for testing.
-- [ ] I have reviewed the results and linked them to [Issue #5](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/5).
+I have now tried all 12 planned test cases:
 
-**Next:** Use these results as a starting point for dependency/path investigation (BK-04) and later installation improvements.
+| Result | Number of tests | Tests |
+| --- | ---: | --- |
+| Pass | **10** | T-01 to T-07, T-09, T-10, T-12 |
+| Fail | **1** | T-11: Node.js crashes if Python DEMKit is stopped |
+| Needs investigation | **1** | T-08: two batteries worked on screen, but I reported terminal errors without saving them |
+
+Most features I tried worked as expected. The biggest problem I found was how the web server handles losing its connection to DEMKit. This is important because an application should show a useful error instead of crashing.
+
+The battery issue is **not confirmed yet**. During startup I also saw InfluxDB connection warnings. InfluxDB setup is outside this assignment for now, but I cannot assume those were the messages from T-08 without checking the logs again.
+
+### Follow-up work
+
+- **[Bug #12 — Node.js crashes when DEMKit stops](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/12):** Fix the request error handling and repeat T-11.
+- **[Investigation #13 — Terminal errors during two-battery test](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/13):** Repeat T-08, save the terminal output and decide whether it is a real bug.
+- Record the exact Git commit and browser version used for this test session, if still available; those were not supplied and I should not guess them.
+- Add important screenshots and logs to GitHub when possible. The startup screenshot and crash trace were shared in chat, but not all evidence is stored in the repository.
+
+## 9. BK-03 checklist
+
+- [x] I tried T-01 through T-12 and wrote down an outcome for every test.
+- [x] I did not mark the test with unknown terminal errors as passed.
+- [x] I recorded the T-11 failure with enough detail to repeat it.
+- [x] I created follow-up GitHub issues for the confirmed failure and the unresolved check.
+- [ ] Exact tested Git commit and browser version still need to be recorded.
+- [ ] Some screenshots and detailed numerical measurements are still missing.
+
+**Testing documentation is finished.** That does not mean all application problems are fixed. The follow-up issues stay open, and failing behaviour should be retested after a fix. This gives us a starting point for [BK-04 — checking dependencies and paths](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/6) and later reliability improvements.
