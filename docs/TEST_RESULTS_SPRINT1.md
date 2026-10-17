@@ -2,7 +2,7 @@
 
 **Date started:** 16 October 2026  
 **Task:** [BK-03 — Test the existing simulation](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/5)  
-**Status:** In progress — T-01 to T-07 and T-09 passed their reported functional checks; T-08 needs investigation; T-10 to T-12 not tested
+**Status:** In progress — T-01 to T-07, T-09 and T-10 passed; T-08 needs investigation; T-11 and T-12 not tested
 
 ## 1. Why I am doing these tests
 
@@ -69,7 +69,7 @@ Copy the commit ID into section 2. If there are local code changes, record them 
 - **Blocked:** I could not test it, for example because the needed touch hardware was missing.
 - **Not tested:** I have not tried it yet.
 
-**Important:** T-01 to T-07 passed manual checks. T-08 worked visibly but the tester reported terminal errors, so it still needs investigation. T-09's overload-warning, cable-failure/restart and recovery steps were reported as working; terminal output and exact penalties were not provided. T-10 to T-12 remain untested.
+**Important:** T-01 to T-07, T-09 and T-10 passed their reported manual checks. T-08 still needs investigation because terminal errors were reported but not shared. T-10 confirmed that refreshing the browser kept devices, the coin balance and a working simulation. T-11 and T-12 remain untested.
 
 | ID | What I am testing | Expected result (short) | Actual result | Status | Evidence |
 | --- | --- | --- | --- | --- | --- |
@@ -82,7 +82,7 @@ Copy the commit ID into section 2. If there are local code changes, record them 
 | T-07 | Battery controls | Modes change the behaviour within limits | Tester reported that Manual +, Manual −, Solar mode, Smart mode, and battery charge limits all worked as expected. No other issues reported. | **Pass — based on manual tester report** | User submitted five Pass results and None for notes. Detailed SoC/power readings and screenshots were not provided. |
 | T-08 | More than one battery | No invalid battery state or crash | I could add two batteries to the same house. Both appeared, the slots updated, the simulation kept running and charge levels stayed between 0% and 100%. However, I answered **Yes** when asked whether Python or Node.js showed errors. I did not include the error message. | **Needs investigation — terminal errors reported** | Tester submitted Yes/Yes/Yes/Yes/**Yes to errors**, with no extra notes. Need terminal error text and whether the message appeared while adding batteries. Not a confirmed clean pass. |
 | T-09 | Overload and cable repair | Warning appears and cable can recover | After receiving the overload and cable-restoration steps, I reported that they all worked. This covers the warning, cable overload/repair and recovery behaviour. I did not provide exact coin amounts or terminal messages. | **Pass — functional checks reported; logs pending** | Tester wrote 'they are all working' on 17 Oct 2026 in response to the T-09 steps. No screenshots, penalty values, or terminal logs were provided. |
-| T-10 | Refresh or reconnect | Page shows the current simulation state | To fill in | Not tested | — |
+| T-10 | Refresh or reconnect | Page shows the current simulation state | Browser successfully refreshed; existing devices remained visible, coin balance was preserved, and the simulation continued working. No unusual behaviour reported. | **Pass — based on manual tester report** | Four Yes responses and Notes: None (17 Oct 2026). No independent screenshots or backend state comparison were provided. |
 | T-11 | Stop backend while web server runs | Failure is visible, not a fake success | To fill in | Not tested | — |
 | T-12 | Resize a device | Device value changes correctly, if supported | To fill in | Not tested | — |
 
@@ -204,6 +204,7 @@ I will create a separate GitHub bug issue for a significant problem. I will not 
 | T-07 | 16 Oct 2026 | I tried Manual +, Manual −, Solar mode and Smart mode. All four behaved as expected, and the battery stayed within its charge limits. I did not notice any other problems. | Direct tester report (five passes, no extra observations); screenshot/log not attached | — |
 | T-08 | 16 Oct 2026 | I added two batteries to one house. The interface and simulation appeared to work, but I reported terminal errors. I need to copy the exact message and check if it relates to the batteries. | Direct tester report; error text and screenshot not supplied yet | Pending error review |
 | T-09 | 17 Oct 2026 | I tested the grid overload and cable-restoration steps and reported that they all worked. I still need to save any terminal messages and the exact coin deduction if I want to check those separately. | Direct tester confirmation in chat ('they are all working'); no screenshot/log attached | — |
+| T-10 | 17 Oct 2026 | I refreshed the browser while the simulation was running. The page reloaded, existing devices and coin balance stayed the same, and the simulation continued working. I did not notice any other problems. | Direct tester report (four Yes responses, no additional observations); no screenshot attached | — |
 | — | — | Add notes here after testing | — | — |
 
 ## 7. What I already know from the handover
