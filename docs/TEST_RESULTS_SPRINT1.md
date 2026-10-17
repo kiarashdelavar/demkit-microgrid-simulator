@@ -2,7 +2,7 @@
 
 **Date started:** 16 October 2026  
 **Task:** [BK-03 — Test the existing simulation](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/5)  
-**Status:** In progress — T-01 to T-07, T-09 and T-10 passed; T-08 needs investigation; T-11 and T-12 not tested
+**Status:** In progress — T-01 to T-07, T-09 and T-10 passed; T-08 needs investigation; T-11 failed; T-12 not tested
 
 ## 1. Why I am doing these tests
 
@@ -69,7 +69,7 @@ Copy the commit ID into section 2. If there are local code changes, record them 
 - **Blocked:** I could not test it, for example because the needed touch hardware was missing.
 - **Not tested:** I have not tried it yet.
 
-**Important:** T-01 to T-07, T-09 and T-10 passed their reported manual checks. T-08 still needs investigation because terminal errors were reported but not shared. T-10 confirmed that refreshing the browser kept devices, the coin balance and a working simulation. T-11 and T-12 remain untested.
+**Important:** T-01 to T-07, T-09 and T-10 passed the reported manual checks. T-08 still needs clarification about earlier terminal errors. **T-11 failed:** stopping Python DEMKit left Node.js unable to connect, and a callback in `web/index.js:342` crashed when it read `res.statusCode` from an undefined response. This is tracked in [bug #12](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/12). T-12 remains untested.
 
 | ID | What I am testing | Expected result (short) | Actual result | Status | Evidence |
 | --- | --- | --- | --- | --- | --- |
@@ -83,7 +83,7 @@ Copy the commit ID into section 2. If there are local code changes, record them 
 | T-08 | More than one battery | No invalid battery state or crash | I could add two batteries to the same house. Both appeared, the slots updated, the simulation kept running and charge levels stayed between 0% and 100%. However, I answered **Yes** when asked whether Python or Node.js showed errors. I did not include the error message. | **Needs investigation — terminal errors reported** | Tester submitted Yes/Yes/Yes/Yes/**Yes to errors**, with no extra notes. Need terminal error text and whether the message appeared while adding batteries. Not a confirmed clean pass. |
 | T-09 | Overload and cable repair | Warning appears and cable can recover | After receiving the overload and cable-restoration steps, I reported that they all worked. This covers the warning, cable overload/repair and recovery behaviour. I did not provide exact coin amounts or terminal messages. | **Pass — functional checks reported; logs pending** | Tester wrote 'they are all working' on 17 Oct 2026 in response to the T-09 steps. No screenshots, penalty values, or terminal logs were provided. |
 | T-10 | Refresh or reconnect | Page shows the current simulation state | Browser successfully refreshed; existing devices remained visible, coin balance was preserved, and the simulation continued working. No unusual behaviour reported. | **Pass — based on manual tester report** | Four Yes responses and Notes: None (17 Oct 2026). No independent screenshots or backend state comparison were provided. |
-| T-11 | Stop backend while web server runs | Failure is visible, not a fake success | To fill in | Not tested | — |
+| T-11 | Stop backend while web server runs | Failure is visible, not a fake success | After I stopped Python DEMKit, Node.js could not connect to port 3001. Instead of handling the failed request, the Node.js process crashed with a TypeError in index.js line 342. The user confirmed the web app stopped working. I have not yet tested recovery after restarting both services. | **Fail — Node.js crashes** | User supplied the Node.js stack trace: `TypeError: Cannot read properties of undefined (reading 'statusCode')` at `workspace/touchtable/web/index.js:342:29`, Node 22.15.0. [Bug #12](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/12). |
 | T-12 | Resize a device | Device value changes correctly, if supported | To fill in | Not tested | — |
 
 ## 5. Steps for each test
@@ -205,6 +205,7 @@ I will create a separate GitHub bug issue for a significant problem. I will not 
 | T-08 | 16 Oct 2026 | I added two batteries to one house. The interface and simulation appeared to work, but I reported terminal errors. I need to copy the exact message and check if it relates to the batteries. | Direct tester report; error text and screenshot not supplied yet | Pending error review |
 | T-09 | 17 Oct 2026 | I tested the grid overload and cable-restoration steps and reported that they all worked. I still need to save any terminal messages and the exact coin deduction if I want to check those separately. | Direct tester confirmation in chat ('they are all working'); no screenshot/log attached | — |
 | T-10 | 17 Oct 2026 | I refreshed the browser while the simulation was running. The page reloaded, existing devices and coin balance stayed the same, and the simulation continued working. I did not notice any other problems. | Direct tester report (four Yes responses, no additional observations); no screenshot attached | — |
+| T-11 | 17 Oct 2026 | I stopped the Python backend while testing what happens when the simulation loses its connection. Node.js crashed rather than showing a useful error. The issue comes from reading `res.statusCode` when the request has no response. I still need to test restarting the services after this failure. | Stack trace shared in chat, including `index.js:342:29` | [Bug #12](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/12) |
 | — | — | Add notes here after testing | — | — |
 
 ## 7. What I already know from the handover
