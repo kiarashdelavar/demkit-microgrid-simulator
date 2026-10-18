@@ -2,7 +2,7 @@
 
 **Date:** 18 October 2026  
 **Related task:** [BK-04 / Issue #6](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/6)  
-**Status:** Draft — repository review completed; a clean setup on another computer has not been tested
+**Status:** Audit completed — source files and local installed package versions recorded; a clean setup on another computer has not been tested
 
 ## 1. Why I am doing this
 
@@ -57,7 +57,42 @@ There are both `pyzmq` and `zmq` entries. I need to check whether both are neces
 
 **Observed in BK-01:** A Python 3.12 virtual environment was created. Setup initially hit a Python 3.13 environment error and a package-download timeout. These are local setup observations, not proof that Python 3.13 is unsupported.
 
-**Still needed:** Record the actual installed package versions with `python -m pip freeze` and check whether a fresh `pip install -r requirements.txt` works.
+### Installed packages on my development laptop
+
+I checked the project virtual environment on **18 October 2026** using:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip list
+.\.venv\Scripts\python.exe -m pip --version
+.\.venv\Scripts\python.exe -c "import sys; print(sys.executable)"
+```
+
+The output confirmed **pip 26.2.1 (Python 3.12)** and that the interpreter is inside the project's `.venv\Scripts\python.exe` folder. The Python 3.12.10 patch version comes from the earlier BK-01 baseline, rather than this command output.
+
+All packages listed in the root `requirements.txt` were present in the environment:
+
+| Direct requirement | Version actually installed |
+| --- | --- |
+| `astral` | `1.10.1` |
+| `beautifulsoup4` | `4.15.0` |
+| `Eve` | `2.3.1` |
+| `Flask` | `3.1.3` |
+| `Flask-HTTPAuth` | `4.8.1` |
+| `flask-cors` | `6.0.5` |
+| `numpy` | `2.5.4` |
+| `pandas` | `3.0.6` |
+| `pymodbus` | `3.16.1` |
+| `python-dateutil` | `2.9.0.post0` |
+| `pytz` | `2026.5` |
+| `pyzmq` | `27.2.0` |
+| `requests` | `2.34.2` |
+| `zmq` | `0.0.0` |
+
+Other packages shown by `pip list` were: `blinker 1.9.0`, `Cerberus 1.3.8`, `certifi 2026.7.22`, `charset-normalizer 3.5.2`, `click 8.5.0`, `dnspython 2.9.0`, `Events 0.3`, `idna 3.20`, `itsdangerous 2.2.0`, `Jinja2 3.1.6`, `MarkupSafe 3.0.4`, `pip 26.2.1`, `pymongo 4.19.0`, `simplejson 3.20.2`, `six 1.17.0`, `soupsieve 3.0.3`, `typing_extensions 4.16.0`, `tzdata 2026.5`, `urllib3 2.8.0`, and `Werkzeug 3.1.9`. They are not explicitly listed as direct requirements in the root file; some may have been installed as dependencies of other packages. I have not checked why each one is present.
+
+**What this confirms:** the packages are installed in the existing working virtual environment. **It does not confirm** that every version is compatible with a clean installation or with macOS/Linux. I should not update or pin the requirements just from this list.
+
+**Still to test separately:** A fresh `pip install -r requirements.txt` in an isolated virtual environment, without changing the current working `.venv`.
 
 ## 4. Node.js dependencies
 
@@ -144,29 +179,26 @@ The simulation settings specify six houses and a 900-second (15-minute) simulati
 | Medium | Old Docker/OS settings are not verified | Review after the Windows launch is stable |
 | Medium | InfluxDB warning appears during startup | **BK-06:** check safe optional logging |
 
-## 10. What I still need to verify locally
+## 10. Audit checklist and later verification
 
-These are **not completed checks**. They will help turn this document into a confirmed installation inventory.
+- [x] Listed the Python and Node dependencies from the repository.
+- [x] Recorded the Windows, Python, Node.js and npm versions used in BK-01.
+- [x] Confirmed installed Python packages with `pip list` in the project `.venv` on 18 October 2026.
+- [x] Checked the launcher, example configuration, port variables and required input files.
+- [x] Documented Windows/older Docker assumptions and the differences between the declared and tested versions.
+- [x] Linked the confirmed Node.js crash to Bug #12, without changing the application code.
 
-From the repository root in PowerShell:
+### Still not verified (future work)
 
-```powershell
-git branch --show-current
-git status --short
-.\.venv\Scripts\python.exe --version
-.\.venv\Scripts\python.exe -m pip freeze
-node --version
-npm --version
-```
+- [ ] Fresh Python installation with `pip install -r requirements.txt` in a separate environment.
+- [ ] Fresh Node.js installation with `npm ci`.
+- [ ] Launch on a different Windows computer, and later macOS/Linux.
+- [ ] Compatibility of the legacy Docker workflow and older runtime declarations.
 
-Run `npm ci` only when I am ready to check installation again; it can change the local `node_modules` folder. A separate clean virtual environment is better for testing Python installation than replacing my existing working one.
+These are **compatibility and setup tests**, not missing results I should mark as passed. They can be picked up in the portable setup/launcher and packaging tasks. I must not change or delete the current working `.venv` to run them.
 
-- [x] Listed Python and Node dependencies from the repository
-- [x] Recorded the Windows versions used in BK-01
-- [x] Checked the launcher, example config, port variables and main data files
-- [x] Identified Windows/legacy Docker assumptions and links to follow-up work
-- [ ] Confirm current installed Python package versions
-- [ ] Repeat a clean install separately from the working environment
-- [ ] Review the findings and close BK-04 when agreed
+### Local Git note
 
-**Next:** Use the findings for BK-05, where I will make the startup configuration easier to use on a different computer, without changing the energy models.
+When I checked the environment, my local branch was `fix/node-backend-error-handling`, and `workspace/touchtable/web/index.js` had uncommitted changes for [Bug #12](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/12). This audit was written on a separate GitHub documentation branch, so it does not include or overwrite that unfinished fix.
+
+**BK-04 conclusion:** I have documented the current dependencies and the main configuration problems well enough to plan the next changes. Next is [BK-05](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/7): make paths and startup configuration portable without changing the energy models.
