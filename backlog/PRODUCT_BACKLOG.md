@@ -24,6 +24,7 @@
 | BK-07 | P0 | Build one-action multi-process launcher | Proposed | BK-05 |
 | BK-08 | P0 | Add readiness checks and useful startup diagnostics | Proposed | BK-07 |
 | BK-09 | P0 | Ensure clean shutdown and repeatable restart | Proposed | BK-07 |
+| BK-23 | P0 | Research and rank student installers for Windows, macOS and Linux | In progress | BK-04; before BK-10–BK-12 |
 | BK-10 | P1 | Package and validate a Windows build | Proposed | BK-07–BK-09 |
 | BK-11 | P1 | Evaluate macOS packaging and test on supported hardware | Proposed | BK-07–BK-09 |
 | BK-12 | P1 | Evaluate Linux packaging and test on supported distribution | Proposed | BK-07–BK-09 |
@@ -84,6 +85,13 @@
 **Story:** As a teacher, I want to close and reopen the tool reliably, so lesson time is not lost.
 
 **Acceptance criteria:** Closing the launcher terminates owned child processes, leaves no stale occupied ports, and supports a successful second launch.
+
+### BK-23 — Research student-friendly cross-platform installers (P0)
+**Story:** As a student, I want to install and open DEMKit without setting up Python, Node.js or Docker myself.
+
+**Acceptance criteria:** Compare packaging options for Windows, macOS and Linux, rank them against our Python + Node.js architecture, recommend one proof of concept with a fallback, and document limitations such as code signing, platform builds, necessary model data and redistribution permissions. Save the findings in [PACKAGING_TOOL_RESEARCH.md](../docs/PACKAGING_TOOL_RESEARCH.md). **Research does not mean a working installer is finished.**
+
+**Tracking:** [GitHub issue #15](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/15). This happens before BK-10, BK-11 and BK-12.
 
 ### BK-10 — Package and validate a Windows build (P1)
 **Story:** As a Windows teacher, I want a straightforward install or portable build, so I do not manually install Python and Node.
