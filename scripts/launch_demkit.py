@@ -7,6 +7,7 @@ the Python standard library and does not install or update dependencies.
 from __future__ import annotations
 
 import os
+import signal
 from pathlib import Path
 import shutil
 import socket
@@ -25,6 +26,9 @@ MODEL_DIR = ROOT / "workspace" / "touchtable" / "model"
 WEB_DIR = ROOT / "workspace" / "touchtable" / "web"
 WEB_SCRIPT = WEB_DIR / "index.js"
 STARTUP_TIMEOUT_SECONDS = 90
+GRACEFUL_STOP_TIMEOUT_SECONDS = 4
+FORCE_STOP_TIMEOUT_SECONDS = 5
+PORT_RELEASE_TIMEOUT_SECONDS = 7
 
 
 class LauncherError(RuntimeError):
@@ -150,18 +154,82 @@ def wait_for_http(name: str, port: int, process: subprocess.Popen, backend: bool
     )
 
 
+def start_child(command: list[str], cwd: Path, env: dict[str, str]) -> subprocess.Popen:
+    """Launch a process group we own, separate from unrelated Python/Node apps."""
+    options = {"cwd": str(cwd), "env": env}
+    if os.name == "nt":
+        options["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
+    else:
+        options["start_new_session"] = True
+    return subprocess.Popen(command, **options)
+
+
+def request_stop(process: subprocess.Popen) -> None:
+    """Ask our child process group to stop."""
+    if process.poll() is not None:
+        return
+    try:
+        if os.name == "nt":
+            process.send_signal(signal.CTRL_BREAK_EVENT)
+        else:
+            os.killpg(process.pid, signal.SIGTERM)
+    except (OSError, ValueError):
+        pass
+
+
+def force_stop(process: subprocess.Popen) -> None:
+    """Force an owned child and its descendants if it ignored the stop request."""
+    if process.poll() is not None:
+        return
+    if os.name == "nt":
+        try:
+            subprocess.run(
+                ["taskkill", "/PID", str(process.pid), "/T", "/F"],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                timeout=FORCE_STOP_TIMEOUT_SECONDS, check=False,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+    else:
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+    if process.poll() is None:
+        try:
+            process.kill()
+        except OSError:
+            pass
+
+
 def stop_started_processes(processes: list[subprocess.Popen]) -> None:
-    """Best-effort cleanup of direct child processes; BK-09 will extend this."""
+    """Stop web then backend, wait briefly, then force only owned processes."""
     for process in reversed(processes):
-        if process.poll() is None:
-            process.terminate()
+        request_stop(process)
     for process in reversed(processes):
         if process.poll() is None:
             try:
-                process.wait(timeout=5)
+                process.wait(timeout=GRACEFUL_STOP_TIMEOUT_SECONDS)
             except subprocess.TimeoutExpired:
-                process.kill()
-                process.wait()
+                pass
+    for process in reversed(processes):
+        if process.poll() is None:
+            print(f"[Launcher] Forcing owned process {process.pid} to stop.", flush=True)
+            force_stop(process)
+        try:
+            process.wait(timeout=FORCE_STOP_TIMEOUT_SECONDS)
+        except (subprocess.TimeoutExpired, OSError):
+            print("[Launcher] Warning: a child process did not confirm exit.", flush=True)
+
+
+def wait_for_ports_released(ports: tuple[int, int]) -> list[int]:
+    """Report remaining listeners; never kill a process we did not start."""
+    deadline = time.monotonic() + PORT_RELEASE_TIMEOUT_SECONDS
+    while True:
+        occupied = [port for port in ports if port_is_open(port)]
+        if not occupied or time.monotonic() >= deadline:
+            return occupied
+        time.sleep(0.25)
 
 
 def run(check_only: bool = False) -> int:
