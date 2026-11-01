@@ -70,19 +70,26 @@ if (-not (Test-Path .\demkittt\conf\usrconf.py)) {
 }
 ```
 
-In `demkittt/conf/usrconf.py`, update the **four active path values** to match your machine:
+The updated `usrconf.example.py` now **finds the four paths automatically** from its own location. You should no longer need to enter your own `D:/...` or `C:/...` path. The relevant lines are:
 
 ```python
-componentPath = 'D:/your-folder/touchtable-tool/demkittt/components/'
-workspacePath = 'D:/your-folder/touchtable-tool/workspace/'
-
-demCfg['env']['path'] = 'D:/your-folder/touchtable-tool/demkittt/components/'
-demCfg['workspace']['path'] = 'D:/your-folder/touchtable-tool/workspace/'
+from pathlib import Path
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+componentPath = (_REPO_ROOT / 'demkittt' / 'components').as_posix() + '/'
+workspacePath = (_REPO_ROOT / 'workspace').as_posix() + '/'
+demCfg['env']['path'] = componentPath
+demCfg['workspace']['path'] = workspacePath
 ```
 
-Use your own directory; the example paths above are placeholders. Use forward slashes and keep the final `/` after `components` and `workspace`.
+**For existing setups:** If you already have `usrconf.py`, Git will not update it. **Do not delete or overwrite it blindly**, especially if you have local settings. Back it up first, then copy the six lines shown above into your existing file, replacing only the four old path assignments. Keep the rest of your local configuration unchanged.
 
-**Important:** `usrconf.py` is meant to be local and is ignored by Git. Do not copy secrets into `usrconf.example.py` or commit another copy under a different filename.
+```powershell
+Copy-Item .\demkittt\conf\usrconf.py .\demkittt\conf\usrconf.py.backup
+```
+
+Do not add a second active definition of `componentPath`, `workspacePath`, or the two `demCfg` paths. After this one-time migration, moving the project to another folder should not require updating the paths again.
+
+**Important:** `usrconf.py` is local and ignored by Git. Keep passwords and tokens out of `usrconf.example.py`.
 
 ## 5. Check which files Git ignores
 
@@ -133,7 +140,25 @@ node index.js
 
 Then open **http://localhost:3002**.
 
-This still requires a manual two-process startup. A more portable configuration and a one-click launcher are **future tasks**, not part of BK-02.
+### Optional Windows development shortcut (BK-05)
+
+You can also run the updated `workspace/touchtable/touchtafel.bat` from any project location:
+
+```powershell
+.\workspace\touchtable\touchtafel.bat
+```
+
+The script finds the repository folder itself, uses the existing `.venv` in that folder, and starts the web server from its own directory. It checks for the local configuration, installed Node packages and Node.js on PATH.
+
+**This is only a development shortcut.** It still waits a fixed 30 seconds between starting Python and Node.js, and it does not check that the backend is ready or provide clean two-process shutdown. Those improvements belong to the later launcher tasks.
+
+To test the configuration without starting the simulation, run:
+
+```powershell
+.\.venv\Scripts\python.exe .\scripts\check_portable_paths.py
+```
+
+This checks the tracked template in two temporary folders, including one with spaces. It **does not** replace the manual start-and-device tests in two actual checkouts.
 
 ## 7. BK-02 verification record
 
