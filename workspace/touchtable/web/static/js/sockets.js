@@ -169,8 +169,30 @@ function requestControl() {
     socket.emit('requestControl');
 }
 */
-function addDeviceToDEMKit(type, housenumber, name, scale) {
-    socket.emit('addDevice', {type, housenumber, name, scale});
+function addDeviceToDEMKit(type, housenumber, name, scale, onResult) {
+    if (typeof onResult !== 'function') {
+        socket.emit('addDevice', {type, housenumber, name, scale});
+        return;
+    }
+    if (!socket.connected) {
+        onResult(false, 'The web server is disconnected. Please reconnect and try again.');
+        return;
+    }
+
+    let completed = false;
+    const timer = setTimeout(function () {
+        finish(false, 'No confirmation from DEMKit. Please reconnect and refresh the page.');
+    }, 12000);
+    function finish(success, message) {
+        if (completed) return;
+        completed = true;
+        clearTimeout(timer);
+        onResult(success, message);
+    }
+
+    socket.emit('addDevice', {type, housenumber, name, scale}, function (reply) {
+        finish(!!(reply && reply.ok), reply && reply.message);
+    });
 }
 
 function updateSettings(deviceName, newProperties) {
