@@ -234,8 +234,11 @@ def wait_for_ports_released(ports: tuple[int, int]) -> list[int]:
 
 def run(check_only: bool = False) -> int:
     children: list[subprocess.Popen] = []
+    ports: tuple[int, int] | None = None
+    exit_code = 0
     try:
         backend_port, web_port = read_ports()
+        ports = (backend_port, web_port)
         node = check_requirements()
         check_ports(backend_port, web_port)
 
@@ -248,20 +251,15 @@ def run(check_only: bool = False) -> int:
         env.setdefault("DEM_HOST", "127.0.0.1")
         print(f"[Launcher] Project: {ROOT}", flush=True)
         print("[Launcher] Starting Python DEMKit...", flush=True)
-        backend = subprocess.Popen(
+        backend = start_child(
             [sys.executable, "-u", str(BACKEND_SCRIPT), "-f", "touchtable/model", "-m", "touchtable"],
-            cwd=str(ROOT),
-            env=env,
+            ROOT, env,
         )
         children.append(backend)
         wait_for_http("Python DEMKit", backend_port, backend, backend=True)
 
         print("[Launcher] Starting Node.js...", flush=True)
-        frontend = subprocess.Popen(
-            [node, str(WEB_SCRIPT)],
-            cwd=str(WEB_DIR),
-            env=env,
-        )
+        frontend = start_child([node, str(WEB_SCRIPT)], WEB_DIR, env)
         children.append(frontend)
         wait_for_http("Node.js web server", web_port, frontend, backend=False)
 
@@ -280,19 +278,36 @@ def run(check_only: bool = False) -> int:
             time.sleep(0.5)
     except KeyboardInterrupt:
         print("\n[Launcher] Stopping DEMKit and Node.js...", flush=True)
-        return 0
     except LauncherError as error:
         print(f"[Launcher] {error.code}: {error}", file=sys.stderr, flush=True)
         print(f"[Launcher] Next step: {error.next_step}", file=sys.stderr, flush=True)
-        return 1
+        exit_code = 1
     except OSError:
         print("[Launcher] PROCESS_ERROR: Could not start or stop a service.", file=sys.stderr, flush=True)
         print("[Launcher] Next step: Check Python/Node.js installation and file permissions.",
               file=sys.stderr, flush=True)
-        return 1
+        exit_code = 1
     finally:
-        stop_started_processes(children)
-
+        if children:
+            print("[Launcher] Closing started services...", flush=True)
+            stop_started_processes(children)
+            if ports is not None:
+                occupied = wait_for_ports_released(ports)
+                if occupied:
+                    print(
+                        "[Launcher] PORT_STILL_IN_USE: Port(s) "
+                        + ", ".join(map(str, occupied))
+                        + " still occupied after shutdown.",
+                        file=sys.stderr, flush=True,
+                    )
+                    print(
+                        "[Launcher] Next step: Check for an old server before launching again.",
+                        file=sys.stderr, flush=True,
+                    )
+                    exit_code = 1
+                else:
+                    print("[Launcher] Shutdown complete. Both ports are free.", flush=True)
+    return exit_code
 
 if __name__ == "__main__":
     if sys.argv[1:] not in ([], ["--check"]):
