@@ -18,7 +18,8 @@ let python = null;
 let webServer = null;
 let window = null;
 
-if (!app.requestSingleInstanceLock()) {
+const hasInstanceLock = app.requestSingleInstanceLock();
+if (!hasInstanceLock) {
   app.quit();
 }
 
@@ -169,7 +170,7 @@ function stopOwnedServices() {
 app.on("will-quit", stopOwnedServices);
 app.on("window-all-closed", () => app.quit());
 
-app.whenReady().then(startDesktop).catch((error) => {
+if (hasInstanceLock) app.whenReady().then(startDesktop).catch((error) => {
   console.error("DEMKit desktop startup failed:", error);
   dialog.showErrorBox(
     "DEMKit could not start",
