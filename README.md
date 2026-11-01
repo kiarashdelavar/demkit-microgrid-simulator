@@ -136,6 +136,7 @@ Roadmap order and scope are **proposed**, subject to supervisor feedback, techni
 - [Sprint 1 manual simulation test results (completed, with follow-up issues)](docs/TEST_RESULTS_SPRINT1.md)
 - [Dependency and configuration audit (BK-04)](docs/DEPENDENCY_AUDIT.md)
 - [Student installer tool research and ranking (BK-23)](docs/PACKAGING_TOOL_RESEARCH.md)
+- [Windows installer first prototype (BK-10 — build and test guide)](docs/WINDOWS_INSTALLER_POC.md)
 - [Local installation and configuration guide](docs/CONFIGURATION_GUIDE.md)
 - [Prioritised product backlog](backlog/PRODUCT_BACKLOG.md)
 - [Previous developer's technical handover](HANDOVER.md)
