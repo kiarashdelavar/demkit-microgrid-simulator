@@ -29,7 +29,7 @@ These are **features present in the inherited code**, not a claim that every sce
 | Area | Intended outcome | Current status |
 | --- | --- | --- |
 | Reproducible setup | Document and stabilise Python/Node dependencies and configuration | Planned |
-| One-action startup | Launch backend and frontend, check readiness, open the interface, and stop cleanly | Planned |
+| One-action startup | Launch backend and frontend, check readiness, open the interface, and stop cleanly | In development — Windows testing pending |
 | Easier distribution | Produce a usable Windows installer or portable build | Planned |
 | Cross-platform support | Investigate, implement, and validate macOS and Linux builds where feasible | Planned — not supported claims |
 | Reliability | Add smoke tests, basic automated tests, helpful errors, and recovery behaviour | Planned |
