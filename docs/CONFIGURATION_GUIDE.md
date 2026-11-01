@@ -84,7 +84,7 @@ demCfg['workspace']['path'] = workspacePath
 **For existing setups:** If you already have `usrconf.py`, Git will not update it. **Do not delete or overwrite it blindly**, especially if you have local settings. Back it up first, then copy the six lines shown above into your existing file, replacing only the four old path assignments. Keep the rest of your local configuration unchanged.
 
 ```powershell
-Copy-Item .\demkittt\conf\usrconf.py .\demkittt\conf\usrconf.py.backup
+Copy-Item .\demkittt\conf\usrconf.py "$HOME\demkit-usrconf-backup.py"
 ```
 
 Do not add a second active definition of `componentPath`, `workspacePath`, or the two `demCfg` paths. After this one-time migration, moving the project to another folder should not require updating the paths again.
