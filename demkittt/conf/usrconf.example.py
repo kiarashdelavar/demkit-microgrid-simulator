@@ -18,23 +18,18 @@
 # along with this program.  If not, contact us via email:
 # demgroup-eemcs@utwente.nl.
 
-# This file is a template to setup DEMKit
-# It is important to modify appropriate lines for your system
-# Each config item should only appear once, comment the others
-# Rename this file to userconf.py
+# Local DEMKit configuration template.
+# Copy this file to usrconf.py in this folder (not userconf.py).
+# usrconf.py is ignored by Git and should contain only local settings.
+# The project paths are calculated from this file's location; they work
+# even when the repository is moved or its folder name contains spaces.
+from pathlib import Path
 
 cfgVer = 3
 
-
-
-# DSM platform scripts location
-# Keep one of these three lines:
-componentPath = 'C:/Saxion_internship/github_handover/microgrid-touchtable/demkittt/components/'			#windows
-
-
-# User models location
-# Keep one of these three lines:
-workspacePath = 'C:/Saxion_internship/github_handover/microgrid-touchtable/workspace/'                  #windows
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+componentPath = (_REPO_ROOT / 'demkittt' / 'components').as_posix() + '/'
+workspacePath = (_REPO_ROOT / 'workspace').as_posix() + '/'
 
 
 # Database settings
@@ -54,24 +49,13 @@ demCfg = {}
 
 
 
-# ENVIRONEMNT PARAMETERS
-# Modify and adapt the following items
-
-# DSM platform scripts location
+# ENVIRONMENT PARAMETERS
+# Reuse the same paths so legacy DEMKit modules receive consistent locations.
 demCfg['env'] = {}
+demCfg['env']['path'] = componentPath
 
-# Uncomment and modify one of the following lines
-demCfg['env']['path'] = 'C:/Saxion_internship/github_handover/microgrid-touchtable/demkittt/components/'
-# demCfg['env']['path'] = '/home/user/demkit/components/'			                    # linux
-# demCfg['env']['path'] = '/Users/yourname/demkit/components/'                          # Mac OS X
-
-# User models location
-demCfg['workspace']= {}
-
-# Uncomment and modify one of the following lines
-demCfg['workspace']['path'] = 'C:/Saxion_internship/github_handover/microgrid-touchtable/workspace/'
-# demCfg['workspace']['path']= '/home/user/python/workspace/example/'	                # linux
-# demCfg['workspace']['path'] = '/Users/yourname/python/workspace/example/'             # Mac OS X
+demCfg['workspace'] = {}
+demCfg['workspace']['path'] = workspacePath
 
 
 # Database settings
