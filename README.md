@@ -2,7 +2,7 @@
 
 **An interactive educational microgrid simulation for exploring local electricity demand, solar generation, electric vehicles, battery storage, and grid constraints.**
 
-> **Project status — development / educational prototype.** The inherited Microgrid Touchtable runs locally in a Windows development environment, but a clean installation, automated launcher, packaged releases, and macOS/Linux support have **not** yet been verified. Those are goals of this project, not existing release features.
+> **Project status — development / educational prototype.** The inherited Microgrid Touchtable runs locally in a Windows development environment, but the new one-action launcher still needs user testing; packaged releases and macOS/Linux support have **not** yet been verified. Those are goals of this project, not existing release features.
 
 This repository builds on the **Microgrid Touchtable** handed over by [Boxing Jiang](https://github.com/Jiangboxing/touchtable-tool), which itself uses **DEMKit** (University of Twente), DEMKit-Touchtable, and webbased-visualizer components. The current assignment focuses on making the simulator easier to install, more reliable, and more useful for students and teachers. See [credits and licensing](#credits-and-licensing).
 
@@ -59,7 +59,7 @@ Key locations:
 | `workspace/touchtable/model/` | Neighbourhood, houses, network, and simulation models |
 | `workspace/touchtable/web/index.js` | Express/Socket.IO middleware and command forwarding |
 | `workspace/touchtable/web/static/` | Browser interface and interactive JavaScript |
-| `workspace/touchtable/touchtafel.bat` | Existing Windows launcher, with hardcoded paths |
+| `workspace/touchtable/touchtafel.bat` | Windows one-action development launcher |
 | `HANDOVER.md` | Technical handover and known issues |
 
 For additional detail, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
@@ -96,26 +96,27 @@ For additional detail, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
    Copy-Item demkittt\conf\usrconf.example.py demkittt\conf\usrconf.py
    ```
 
-   In `demkittt/conf/usrconf.py`, set the following four values to match the checkout on **your** machine (use forward slashes and trailing `/`): `componentPath`, `workspacePath`, `demCfg['env']['path']`, and `demCfg['workspace']['path']`. Do **not** commit this file or real credentials.
+   The updated template automatically finds the repository folders; you no longer need to enter hardcoded paths. **Do not overwrite an existing local `usrconf.py`** without first backing it up, and do not commit this file or real credentials. See [configuration guide](docs/CONFIGURATION_GUIDE.md).
 
-5. Start the Python simulation in terminal 1, from the repository root:
-
-   ```powershell
-   .\.venv\Scripts\python.exe .\demkittt\demkit.py -f touchtable/model -m touchtable
-   ```
-
-   Wait until the DEMKit interface reports that it is listening on port **3001**.
-
-6. Start Node.js in terminal 2:
+5. For the **one-action development launcher** (BK-07), make sure no older DEMKit Python or Node.js servers are running and then execute:
 
    ```powershell
-   cd workspace\touchtable\web
-   node index.js
+   .\workspace\touchtable\touchtafel.bat
    ```
 
-7. Open **http://localhost:3002**. Click **Start Mission** to begin the initially paused simulation.
+   You can also double-click that batch file in Windows Explorer. It starts Python on port **3001**, waits for an HTTP response, starts Node.js on port **3002**, and opens **http://localhost:3002** after both respond.
 
-Stop both services with `Ctrl+C` in their respective terminals. The existing `.bat` file has machine-specific absolute paths and should not be assumed to work on another computer without modification. See [HANDOVER.md](HANDOVER.md) for troubleshooting and full context.
+   To run the same launcher directly:
+
+   ```powershell
+   .\.venv\Scripts\python.exe .\scripts\launch_demkit.py
+   ```
+
+6. Click **Start Mission** in the browser to begin the initially paused simulation. Keep the launcher terminal open; press `Ctrl+C` when finished.
+
+**Alternative for troubleshooting:** You can still start `demkittt/demkit.py` and `workspace/touchtable/web/index.js` manually in two terminals as described in the [configuration guide](docs/CONFIGURATION_GUIDE.md).
+
+**Limitations:** This does not install dependencies or create a packaged application. The launcher is a development prototype; improved startup diagnostics, reliable restart/shutdown, and macOS/Linux tests are still pending.
 
 ## Planned development roadmap
 
