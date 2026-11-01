@@ -30,6 +30,15 @@ def ignore_files(directory: str, names: list[str]) -> set[str]:
     return blocked
 
 
+def ignore_package_cache(directory: str, names: list[str]) -> set[str]:
+    # Nested node_modules folders are required for module resolution. Never
+    # remove them when copying the installed Node dependency tree.
+    return {
+        name for name in names
+        if name in {"__pycache__", ".git"} or name.endswith((".log", ".bak"))
+    }
+
+
 def prepare_runtime() -> None:
     if not (WEB_SRC / "node_modules").is_dir():
         raise RuntimeError("Run npm ci in workspace/touchtable/web before packaging.")
@@ -49,7 +58,7 @@ def prepare_runtime() -> None:
     for filename in ("index.js", "package.json"):
         shutil.copy2(WEB_SRC / filename, staged_web / filename)
     shutil.copytree(WEB_SRC / "node_modules", staged_web / "node_modules",
-                    ignore=ignore_files)
+                    ignore=ignore_package_cache)
     config_dir = RUNTIME / "demkittt" / "conf"
     shutil.copy2(config_dir / "usrconf.example.py", config_dir / "usrconf.py")
 
