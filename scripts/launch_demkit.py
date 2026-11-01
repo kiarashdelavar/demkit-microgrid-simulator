@@ -7,6 +7,7 @@ the Python standard library and does not install or update dependencies.
 from __future__ import annotations
 
 import os
+import signal
 from pathlib import Path
 import shutil
 import socket
@@ -25,6 +26,9 @@ MODEL_DIR = ROOT / "workspace" / "touchtable" / "model"
 WEB_DIR = ROOT / "workspace" / "touchtable" / "web"
 WEB_SCRIPT = WEB_DIR / "index.js"
 STARTUP_TIMEOUT_SECONDS = 90
+GRACEFUL_STOP_TIMEOUT_SECONDS = 4
+FORCE_STOP_TIMEOUT_SECONDS = 5
+PORT_RELEASE_TIMEOUT_SECONDS = 7
 
 
 class LauncherError(RuntimeError):
@@ -150,24 +154,91 @@ def wait_for_http(name: str, port: int, process: subprocess.Popen, backend: bool
     )
 
 
+def start_child(command: list[str], cwd: Path, env: dict[str, str]) -> subprocess.Popen:
+    """Launch a process group we own, separate from unrelated Python/Node apps."""
+    options = {"cwd": str(cwd), "env": env}
+    if os.name == "nt":
+        options["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
+    else:
+        options["start_new_session"] = True
+    return subprocess.Popen(command, **options)
+
+
+def request_stop(process: subprocess.Popen) -> None:
+    """Ask our child process group to stop."""
+    if process.poll() is not None:
+        return
+    try:
+        if os.name == "nt":
+            process.send_signal(signal.CTRL_BREAK_EVENT)
+        else:
+            os.killpg(process.pid, signal.SIGTERM)
+    except (OSError, ValueError):
+        pass
+
+
+def force_stop(process: subprocess.Popen) -> None:
+    """Force an owned child and its descendants if it ignored the stop request."""
+    if process.poll() is not None:
+        return
+    if os.name == "nt":
+        try:
+            subprocess.run(
+                ["taskkill", "/PID", str(process.pid), "/T", "/F"],
+                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                timeout=FORCE_STOP_TIMEOUT_SECONDS, check=False,
+            )
+        except (OSError, subprocess.TimeoutExpired):
+            pass
+    else:
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+    if process.poll() is None:
+        try:
+            process.kill()
+        except OSError:
+            pass
+
+
 def stop_started_processes(processes: list[subprocess.Popen]) -> None:
-    """Best-effort cleanup of direct child processes; BK-09 will extend this."""
+    """Stop web then backend, wait briefly, then force only owned processes."""
     for process in reversed(processes):
-        if process.poll() is None:
-            process.terminate()
+        request_stop(process)
     for process in reversed(processes):
         if process.poll() is None:
             try:
-                process.wait(timeout=5)
+                process.wait(timeout=GRACEFUL_STOP_TIMEOUT_SECONDS)
             except subprocess.TimeoutExpired:
-                process.kill()
-                process.wait()
+                pass
+    for process in reversed(processes):
+        if process.poll() is None:
+            print(f"[Launcher] Forcing owned process {process.pid} to stop.", flush=True)
+            force_stop(process)
+        try:
+            process.wait(timeout=FORCE_STOP_TIMEOUT_SECONDS)
+        except (subprocess.TimeoutExpired, OSError):
+            print("[Launcher] Warning: a child process did not confirm exit.", flush=True)
+
+
+def wait_for_ports_released(ports: tuple[int, int]) -> list[int]:
+    """Report remaining listeners; never kill a process we did not start."""
+    deadline = time.monotonic() + PORT_RELEASE_TIMEOUT_SECONDS
+    while True:
+        occupied = [port for port in ports if port_is_open(port)]
+        if not occupied or time.monotonic() >= deadline:
+            return occupied
+        time.sleep(0.25)
 
 
 def run(check_only: bool = False) -> int:
     children: list[subprocess.Popen] = []
+    ports: tuple[int, int] | None = None
+    exit_code = 0
     try:
         backend_port, web_port = read_ports()
+        ports = (backend_port, web_port)
         node = check_requirements()
         check_ports(backend_port, web_port)
 
@@ -180,20 +251,15 @@ def run(check_only: bool = False) -> int:
         env.setdefault("DEM_HOST", "127.0.0.1")
         print(f"[Launcher] Project: {ROOT}", flush=True)
         print("[Launcher] Starting Python DEMKit...", flush=True)
-        backend = subprocess.Popen(
+        backend = start_child(
             [sys.executable, "-u", str(BACKEND_SCRIPT), "-f", "touchtable/model", "-m", "touchtable"],
-            cwd=str(ROOT),
-            env=env,
+            ROOT, env,
         )
         children.append(backend)
         wait_for_http("Python DEMKit", backend_port, backend, backend=True)
 
         print("[Launcher] Starting Node.js...", flush=True)
-        frontend = subprocess.Popen(
-            [node, str(WEB_SCRIPT)],
-            cwd=str(WEB_DIR),
-            env=env,
-        )
+        frontend = start_child([node, str(WEB_SCRIPT)], WEB_DIR, env)
         children.append(frontend)
         wait_for_http("Node.js web server", web_port, frontend, backend=False)
 
@@ -212,19 +278,36 @@ def run(check_only: bool = False) -> int:
             time.sleep(0.5)
     except KeyboardInterrupt:
         print("\n[Launcher] Stopping DEMKit and Node.js...", flush=True)
-        return 0
     except LauncherError as error:
         print(f"[Launcher] {error.code}: {error}", file=sys.stderr, flush=True)
         print(f"[Launcher] Next step: {error.next_step}", file=sys.stderr, flush=True)
-        return 1
+        exit_code = 1
     except OSError:
         print("[Launcher] PROCESS_ERROR: Could not start or stop a service.", file=sys.stderr, flush=True)
         print("[Launcher] Next step: Check Python/Node.js installation and file permissions.",
               file=sys.stderr, flush=True)
-        return 1
+        exit_code = 1
     finally:
-        stop_started_processes(children)
-
+        if children:
+            print("[Launcher] Closing started services...", flush=True)
+            stop_started_processes(children)
+            if ports is not None:
+                occupied = wait_for_ports_released(ports)
+                if occupied:
+                    print(
+                        "[Launcher] PORT_STILL_IN_USE: Port(s) "
+                        + ", ".join(map(str, occupied))
+                        + " still occupied after shutdown.",
+                        file=sys.stderr, flush=True,
+                    )
+                    print(
+                        "[Launcher] Next step: Check for an old server before launching again.",
+                        file=sys.stderr, flush=True,
+                    )
+                    exit_code = 1
+                else:
+                    print("[Launcher] Shutdown complete. Both ports are free.", flush=True)
+    return exit_code
 
 if __name__ == "__main__":
     if sys.argv[1:] not in ([], ["--check"]):

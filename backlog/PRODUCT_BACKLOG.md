@@ -23,7 +23,7 @@
 | BK-06 | P0 | Investigate making InfluxDB logging optional | Deferred | BK-03, BK-04 |
 | BK-07 | P0 | Build one-action multi-process launcher | Done (PR #20 merged; Windows tested) | BK-05 |
 | BK-08 | P0 | Add readiness checks and useful startup diagnostics | In progress | BK-07 |
-| BK-09 | P0 | Ensure clean shutdown and repeatable restart | Proposed | BK-07 |
+| BK-09 | P0 | Ensure clean shutdown and repeatable restart | In progress | BK-07 |
 | BK-23 | P0 | Research and rank student installers for Windows, macOS and Linux | Done | BK-04; before BK-10–BK-12 |
 | BK-10 | P1 | Package and validate a Windows build | Proposed | BK-07–BK-09 |
 | BK-11 | P1 | Evaluate macOS packaging and test on supported hardware | Proposed | BK-07–BK-09 |
