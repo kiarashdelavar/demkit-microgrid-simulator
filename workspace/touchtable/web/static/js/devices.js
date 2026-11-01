@@ -296,46 +296,51 @@
 					return;
 				}
 
-				event.relatedTarget.style.opacity = 1;
-				event.relatedTarget.setAttribute('data-opacity', 100);
-				event.relatedTarget.setAttribute('data-oldhouse', currentHouse);
-				
-				let housenumber = currentHouse;
-				let scale = (parseFloat(event.relatedTarget.getAttribute('data-z')) || 1);
-				
-				//Add the devices
-				if (event.relatedTarget.classList.contains("ev")) {
-					addDeviceToDEMKit('ev', housenumber, event.relatedTarget.id, scale);
-				}
-				else if (event.relatedTarget.classList.contains("pv")) {
-					addDeviceToDEMKit('pv', housenumber, event.relatedTarget.id, scale);
-				}
-				else if (event.relatedTarget.classList.contains("bat")) {
-					addDeviceToDEMKit('bat', housenumber, event.relatedTarget.id, scale);
-				}
-				else if (event.relatedTarget.classList.contains("hp")) {
-					addDeviceToDEMKit('hp', housenumber, event.relatedTarget.id, scale);
-				}
-				else if (event.relatedTarget.classList.contains("wm")) {
-					addDeviceToDEMKit('wm', housenumber, event.relatedTarget.id, scale);
-				}
-				else if (event.relatedTarget.classList.contains("dw")) {
-					addDeviceToDEMKit('dw', housenumber, event.relatedTarget.id, scale);
-				}
+				let device = event.relatedTarget;
+				if (device.getAttribute('data-pending-add') === '1') return;
 
-				if (typeof commitDeviceDrop == "function") {
-					commitDeviceDrop(event.relatedTarget, housenumber);
-				}
-				
-				
-				for (var i = 0; i < event.relatedTarget.childNodes.length; i++) {
-					if (event.relatedTarget.childNodes[i].className == "power" || event.relatedTarget.childNodes[i].className == "soc" || event.relatedTarget.childNodes[i].className == "socback") {
-						if (event.relatedTarget.childNodes[i].className == "power" || event.relatedTarget.childNodes[i].className == "soc") {
-							event.relatedTarget.childNodes[i].style.width = "0%";
-						}
-						event.relatedTarget.childNodes[i].style.visibility = "visible";
+				let type = null;
+				for (let option of ['ev', 'pv', 'bat', 'hp', 'wm', 'dw']) {
+					if (device.classList.contains(option)) {
+						type = option;
+						break;
 					}
 				}
+				if (!type) return;
+
+				let housenumber = currentHouse;
+				let scale = (parseFloat(device.getAttribute('data-z')) || 1);
+				device.setAttribute('data-pending-add', '1');
+				device.style.opacity = 0.6;
+
+				addDeviceToDEMKit(type, housenumber, device.id, scale, function (success, message) {
+					if (document.getElementById(device.id) !== device) return;
+					device.removeAttribute('data-pending-add');
+					if (!success) {
+						if (typeof rejectDeviceDrop === 'function') {
+							rejectDeviceDrop(device, message || 'Could not add device. Please try again.');
+						}
+						return;
+					}
+
+					device.style.opacity = 1;
+					device.setAttribute('data-opacity', 100);
+					device.setAttribute('data-oldhouse', currentHouse);
+
+					if (typeof commitDeviceDrop === 'function') {
+						commitDeviceDrop(device, housenumber);
+					}
+
+					for (var i = 0; i < device.childNodes.length; i++) {
+						let child = device.childNodes[i];
+						if (child.className == 'power' || child.className == 'soc' || child.className == 'socback') {
+							if (child.className == 'power' || child.className == 'soc') {
+								child.style.width = '0%';
+							}
+							child.style.visibility = 'visible';
+						}
+					}
+				});
 			}
 		}
 	  },
