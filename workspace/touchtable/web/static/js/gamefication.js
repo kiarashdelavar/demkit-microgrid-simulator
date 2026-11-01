@@ -3547,13 +3547,17 @@
 		window.setTimeout(refreshGameficationUI, 0);
 	};
 
-	window.rejectDeviceDrop = function (device) {
+	window.rejectDeviceDrop = function (device, failureMessage) {
 		let restored = isPurchased(device) && restoreDeviceToPreviousHouse(device);
 
 		if (!restored) {
 			rejectNewDevice(device);
+			if (failureMessage) device.remove();
 		}
 
+		if (failureMessage) {
+			setMessage(failureMessage);
+		}
 		refreshGameficationUI();
 	};
 

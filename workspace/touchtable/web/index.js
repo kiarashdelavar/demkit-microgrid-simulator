@@ -19,6 +19,27 @@ let url = 'http://' + DEMIp + ':' + DEMPort + '/'
 let urlForTick = url + "tick";
 let latestDemState = null;
 
+function handleDemResponse(err, res, acknowledge) {
+    let result;
+    if (err) {
+        console.error('DEMKit request failed:', err.message);
+        result = {ok: false, message: 'DEMKit is unavailable. Restart the simulation and try again.'};
+    } else if (!res) {
+        console.error('DEMKit did not return a response');
+        result = {ok: false, message: 'No reply from DEMKit. Please try again.'};
+    } else if (res.statusCode < 200 || res.statusCode >= 300) {
+        console.error('DEMKit returned HTTP', res.statusCode);
+        result = {ok: false, message: 'DEMKit could not process that device (HTTP ' + res.statusCode + ').'};
+    } else {
+        console.log('DEMKit request succeeded:', res.statusCode);
+        result = {ok: true};
+    }
+    if (typeof acknowledge === 'function') {
+        acknowledge(result);
+    }
+    return result;
+}
+
 console.log(urlForTick)
 
 app.get('/', (req, res) => {
@@ -120,12 +141,12 @@ io.on('connection', function(socket){
 				{ cmd: 'removeObj', entity : "Controller-"+name} 
 			]
 		}, (err, res, body) => {
-				console.log(res.statusCode);
+				handleDemResponse(err, res);
 		});
 		
 	});
 
-	socket.on('addDevice', function(settings) {
+	socket.on('addDevice', function(settings, acknowledge) {
         let type = settings.type;
         let config = {
             name: settings.name,
@@ -136,25 +157,27 @@ io.on('connection', function(socket){
 
         switch (settings.type) {
             case 'bat':
-                addBattery(config);
+                addBattery(config, acknowledge);
                 break;
             case 'pv':
-                addSolarPanel(config);
+                addSolarPanel(config, acknowledge);
                 break;
             case 'dw':
-                addDishwasher(config);
+                addDishwasher(config, acknowledge);
                 break;
             case 'wm':
-                addWashingMachine(config);
+                addWashingMachine(config, acknowledge);
                 break;
             case 'ev':
-                addVehicle(config);
+                addVehicle(config, acknowledge);
                 break;
             case 'hp':
-                addHeatpump(config);
+                addHeatpump(config, acknowledge);
                 break;
             default:
-
+                if (typeof acknowledge === 'function') {
+                    acknowledge({ok: false, message: 'Unknown device type.'});
+                }
         }
 	});
 
@@ -162,7 +185,7 @@ io.on('connection', function(socket){
 		request.post(url + 'syncsetnp/'+settings.name, {json: 
 			settings.properties
 		}, (err, res, body) => {
-				console.log(res.statusCode);
+				handleDemResponse(err, res);
 		});
     });
 
@@ -172,13 +195,13 @@ io.on('connection', function(socket){
 				{ cmd: 'callFunction', entity : settings.name, func: 'reset', args: { restoreGrid: true } }
 			]
 		}, (err, res, body) => {
-				console.log(res.statusCode);
+				handleDemResponse(err, res);
 		});
     })
 });
 
-function addBattery(config) {
-	request.post(url + 'synccmds', {json: 
+function addBattery(config, acknowledge) {
+	request.post(url + 'synccmds', {timeout: 8000, json: 
 		[
 			{ cmd: 'createObj', 'entity' : 'BufDev', 'val': 
 				[
@@ -215,12 +238,12 @@ function addBattery(config) {
 			{ cmd: 'callFunction', entity : "Controller-"+config.name, func: 'startup', args: null}
 		]
 	}, (err, res, body) => {
-            console.log(res.statusCode);
+            handleDemResponse(err, res, acknowledge);
     });
 }
 
-function addSolarPanel(config) {
-	request.post(url + 'synccmds', {json: 
+function addSolarPanel(config, acknowledge) {
+	request.post(url + 'synccmds', {timeout: 8000, json: 
 		[
 			{ cmd: 'createObj', 'entity' : 'SolarPanelDev', 'val': 
 				[
@@ -248,7 +271,7 @@ function addSolarPanel(config) {
 			{ cmd: 'callFunction', entity : "Controller-"+config.name, func: 'startup', args: null}
 		]
 	}, (err, res, body) => {
-            console.log(res.statusCode);
+            handleDemResponse(err, res, acknowledge);
     });
 
 }
@@ -256,8 +279,8 @@ function addSolarPanel(config) {
 
 
 
-function addWashingMachine(config) {
-    request.post(url + 'synccmds', {json: 
+function addWashingMachine(config, acknowledge) {
+    request.post(url + 'synccmds', {timeout: 8000, json: 
 		[
 			{ cmd: 'createObj', 'entity' : 'TtTsDev', 'val': 
 				[
@@ -280,12 +303,12 @@ function addWashingMachine(config) {
 			{ cmd: 'callFunction', entity : "Controller-"+config.name, func: 'startup', args: null}
 		]
 	}, (err, res, body) => {
-            console.log(res.statusCode);
+            handleDemResponse(err, res, acknowledge);
     });
 }
 
-function addDishwasher(config) {
-    request.post(url + 'synccmds', {json: 
+function addDishwasher(config, acknowledge) {
+    request.post(url + 'synccmds', {timeout: 8000, json: 
 		[
 			{ cmd: 'createObj', 'entity' : 'TtTsDevDw', 'val': 
 				[
@@ -308,12 +331,12 @@ function addDishwasher(config) {
 			{ cmd: 'callFunction', entity : "Controller-"+config.name, func: 'startup', args: null}
 		]
 	}, (err, res, body) => {
-            console.log(res.statusCode);
+            handleDemResponse(err, res, acknowledge);
     });
 }
 
-function addVehicle(config) {
-    request.post(url + 'synccmds', {json: 
+function addVehicle(config, acknowledge) {
+    request.post(url + 'synccmds', {timeout: 8000, json: 
 		[
 			{ cmd: 'createObj', 'entity' : 'TtBtsDev', 'val': 
 				[
@@ -339,12 +362,12 @@ function addVehicle(config) {
 			{ cmd: 'callFunction', entity : "Controller-"+config.name, func: 'startup', args: null}
 		]
 	}, (err, res, body) => {
-            console.log(res.statusCode);
+            handleDemResponse(err, res, acknowledge);
     });
 }
 
-function addHeatpump(config) {
-	request.post(url + 'synccmds', {json: 
+function addHeatpump(config, acknowledge) {
+	request.post(url + 'synccmds', {timeout: 8000, json: 
 		[
 			{ cmd: 'createObj', 'entity' : 'BufConvDev', 'val': 
 				[
@@ -376,7 +399,7 @@ function addHeatpump(config) {
 			{ cmd: 'callFunction', entity : "Controller-"+config.name, func: 'startup', args: null}
 		]
 	}, (err, res, body) => {
-            console.log(res.statusCode);
+            handleDemResponse(err, res, acknowledge);
     });
 }
 
