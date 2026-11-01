@@ -162,6 +162,37 @@ You can run the underlying Python launcher directly:
 
 The launcher refuses to start if either port is already in use. Close old DEMKit windows first; don't run `node index.js` or `demkit.py` separately at the same time.
 
+### Checking your setup without starting the simulation (BK-08)
+
+From the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe .\scripts\launch_demkit.py --check
+```
+
+If both ports are free and the required files and Node.js are available, the command prints `Checks passed` and **does not** start Python DEMKit or Node.js. If either port is already in use, it reports `PORT_IN_USE` and tells you to close the earlier servers first.
+
+Expected startup issues now have short codes and suggested fixes:
+
+| Message | What to try |
+| --- | --- |
+| `MISSING_CONFIG` | Copy `demkittt/conf/usrconf.example.py` to the ignored local `usrconf.py`. |
+| `MISSING_NPM` | Run `npm ci` inside `workspace/touchtable/web`. |
+| `MISSING_NODE` | Install Node.js and reopen your terminal. |
+| `PORT_IN_USE` | Close earlier DEMKit/Node.js servers. |
+| `BACKEND_EXITED` | Read the Python error printed above it; check `usrconf.py`. |
+| `WEB_EXITED` | Read the Node.js error printed above it; check web dependencies. |
+| `BACKEND_TIMEOUT` / `WEB_TIMEOUT` | Check the service output and port availability. |
+| `INVALID_PORT` | Use valid numeric port settings. |
+
+To run automated checks without starting the real simulation:
+
+```powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -p "test_launcher.py"
+```
+
+**Keep the local configuration private.** The launcher does not display password/token values; backend and Node.js themselves may still print technical diagnostic output. In case of an error, share only the error code and relevant message, and remove private details from any logs before sending them to someone else.
+
 **This is not an installer.** Students still need Python and Node.js and must install the dependencies first. This is a development prototype; diagnostics, process lifecycle reliability and macOS/Linux verification remain future work (BK-08, BK-09 and packaging tasks). InfluxDB isn't required for this launcher and its existing connection warnings may still appear.
 
 To test the configuration without starting the simulation, run:
