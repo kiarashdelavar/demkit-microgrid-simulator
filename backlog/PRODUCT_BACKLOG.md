@@ -15,16 +15,16 @@
 
 | ID | Priority | Item | Status | Dependencies |
 | --- | --- | --- | --- | --- |
-| BK-01 | P0 | Record working development baseline | Proposed | — |
-| BK-02 | P0 | Protect local configuration and environment files | Proposed | — |
-| BK-03 | P0 | Run and document simulation smoke tests | Proposed | BK-01 |
-| BK-04 | P0 | Audit runtimes, dependencies and hardcoded paths | Proposed | BK-01 |
-| BK-05 | P0 | Refactor machine-specific startup configuration | Proposed | BK-04 |
-| BK-06 | P0 | Investigate making InfluxDB logging optional | Proposed | BK-03, BK-04 |
-| BK-07 | P0 | Build one-action multi-process launcher | Proposed | BK-05 |
+| BK-01 | P0 | Record working development baseline | Done | — |
+| BK-02 | P0 | Protect local configuration and environment files | Done | — |
+| BK-03 | P0 | Run and document simulation smoke tests | Done | BK-01 |
+| BK-04 | P0 | Audit runtimes, dependencies and hardcoded paths | Done | BK-01 |
+| BK-05 | P0 | Refactor machine-specific startup configuration | Done | BK-04 |
+| BK-06 | P0 | Investigate making InfluxDB logging optional | Deferred | BK-03, BK-04 |
+| BK-07 | P0 | Build one-action multi-process launcher | In progress | BK-05 |
 | BK-08 | P0 | Add readiness checks and useful startup diagnostics | Proposed | BK-07 |
 | BK-09 | P0 | Ensure clean shutdown and repeatable restart | Proposed | BK-07 |
-| BK-23 | P0 | Research and rank student installers for Windows, macOS and Linux | In progress | BK-04; before BK-10–BK-12 |
+| BK-23 | P0 | Research and rank student installers for Windows, macOS and Linux | Done | BK-04; before BK-10–BK-12 |
 | BK-10 | P1 | Package and validate a Windows build | Proposed | BK-07–BK-09 |
 | BK-11 | P1 | Evaluate macOS packaging and test on supported hardware | Proposed | BK-07–BK-09 |
 | BK-12 | P1 | Evaluate Linux packaging and test on supported distribution | Proposed | BK-07–BK-09 |
