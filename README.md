@@ -2,7 +2,7 @@
 
 **An interactive educational microgrid simulation for exploring local electricity demand, solar generation, electric vehicles, battery storage, and grid constraints.**
 
-> **Project status — development / educational prototype.** The inherited Microgrid Touchtable runs locally in a Windows development environment, but the new one-action launcher still needs user testing; packaged releases and macOS/Linux support have **not** yet been verified. Those are goals of this project, not existing release features.
+> **Project status — development / educational prototype.** The inherited Microgrid Touchtable runs locally in a Windows development environment, and a Windows one-action launcher has been manually tested; packaged releases and macOS/Linux support have **not** yet been verified. Those are goals of this project, not existing release features.
 
 This repository builds on the **Microgrid Touchtable** handed over by [Boxing Jiang](https://github.com/Jiangboxing/touchtable-tool), which itself uses **DEMKit** (University of Twente), DEMKit-Touchtable, and webbased-visualizer components. The current assignment focuses on making the simulator easier to install, more reliable, and more useful for students and teachers. See [credits and licensing](#credits-and-licensing).
 
@@ -29,7 +29,7 @@ These are **features present in the inherited code**, not a claim that every sce
 | Area | Intended outcome | Current status |
 | --- | --- | --- |
 | Reproducible setup | Document and stabilise Python/Node dependencies and configuration | Planned |
-| One-action startup | Launch backend and frontend, check readiness, open the interface, and stop cleanly | In development — Windows testing pending |
+| One-action startup | Launch backend and frontend, check readiness, open the interface, and stop cleanly | Windows development prototype tested — BK-07 complete; BK-08/BK-09 pending |
 | Easier distribution | Produce a usable Windows installer or portable build | Planned |
 | Cross-platform support | Investigate, implement, and validate macOS and Linux builds where feasible | Planned — not supported claims |
 | Reliability | Add smoke tests, basic automated tests, helpful errors, and recovery behaviour | Planned |
