@@ -116,12 +116,10 @@ class LauncherTests(unittest.TestCase):
 
     def test_windows_child_uses_separate_process_group(self):
         with patch.object(launcher.os, "name", "nt"):
-            with patch.object(launcher.subprocess, "Popen") as launch:
-                launcher.start_child(["node"], SCRIPT.parent, {})
-        self.assertEqual(
-            launch.call_args.kwargs["creationflags"],
-            subprocess.CREATE_NEW_PROCESS_GROUP,
-        )
+            with patch.object(launcher.subprocess, "CREATE_NEW_PROCESS_GROUP", 0x200, create=True):
+                with patch.object(launcher.subprocess, "Popen") as launch:
+                    launcher.start_child(["node"], SCRIPT.parent, {})
+        self.assertEqual(launch.call_args.kwargs["creationflags"], 0x200)
 
     def test_linux_child_uses_own_session(self):
         with patch.object(launcher.os, "name", "posix"):
@@ -134,8 +132,9 @@ class LauncherTests(unittest.TestCase):
         child.pid = 3456
         child.poll.return_value = None
         with patch.object(launcher.os, "name", "nt"):
-            launcher.request_stop(child)
-        child.send_signal.assert_called_once_with(launcher.signal.CTRL_BREAK_EVENT)
+            with patch.object(launcher.signal, "CTRL_BREAK_EVENT", 1, create=True):
+                launcher.request_stop(child)
+        child.send_signal.assert_called_once_with(1)
 
     def test_stopped_child_is_not_signalled_again(self):
         child = Mock()
@@ -170,7 +169,7 @@ class LauncherTests(unittest.TestCase):
     def test_shutdown_skips_force_when_child_exits(self):
         child = Mock()
         child.pid = 6789
-        child.poll.side_effect = [None, None, 0, 0]
+        child.poll.side_effect = [None, 0]
         child.wait.return_value = 0
         with patch.object(launcher, "request_stop") as request:
             with patch.object(launcher, "force_stop") as force:
