@@ -19,3 +19,9 @@ touchtable_composed.py
 workspace/touchtable/model/data/host/
 
 .venv/
+
+# Local Windows installer builds (large binaries, not for repository commits)
+packaging/windows/.build/
+packaging/windows/dist/
+packaging/windows/electron/node_modules/
+packaging/windows/electron/dist/
