@@ -140,17 +140,29 @@ node index.js
 
 Then open **http://localhost:3002**.
 
-### Optional Windows development shortcut (BK-05)
+### One-action Windows launcher (BK-07 development version)
 
-You can also run the updated `workspace/touchtable/touchtafel.bat` from any project location:
+After installing the existing dependencies and creating `demkittt/conf/usrconf.py`, stop **any previous Python or Node.js servers** on ports 3001 and 3002.
+
+From the repository root, run:
 
 ```powershell
 .\workspace\touchtable\touchtafel.bat
 ```
 
-The script finds the repository folder itself, uses the existing `.venv` in that folder, and starts the web server from its own directory. It checks for the local configuration, installed Node packages and Node.js on PATH.
+Or double-click `workspace/touchtable/touchtafel.bat` in File Explorer. This now calls `scripts/launch_demkit.py` using the project's Python virtual environment.
 
-**This is only a development shortcut.** It still waits a fixed 30 seconds between starting Python and Node.js, and it does not check that the backend is ready or provide clean two-process shutdown. Those improvements belong to the later launcher tasks.
+The script starts Python DEMKit, checks for an HTTP response on port **3001**, starts Node.js, checks the browser homepage on **3002**, and opens `http://localhost:3002`. It doesn't use a fixed 30-second sleep. Keep the launcher window open while using the simulation.
+
+You can run the underlying Python launcher directly:
+
+```powershell
+.\.venv\Scripts\python.exe .\scripts\launch_demkit.py
+```
+
+The launcher refuses to start if either port is already in use. Close old DEMKit windows first; don't run `node index.js` or `demkit.py` separately at the same time.
+
+**This is not an installer.** Students still need Python and Node.js and must install the dependencies first. This is a development prototype; diagnostics, process lifecycle reliability and macOS/Linux verification remain future work (BK-08, BK-09 and packaging tasks). InfluxDB isn't required for this launcher and its existing connection warnings may still appear.
 
 To test the configuration without starting the simulation, run:
 
