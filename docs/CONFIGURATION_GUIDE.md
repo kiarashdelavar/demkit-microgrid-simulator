@@ -198,21 +198,21 @@ To run automated checks without starting the real simulation:
 When you finish using the simulation:
 
 1. Return to the terminal that is running the launcher.
-2. Press **Ctrl+C once**. Wait for the message \`[Launcher] Shutdown complete. Both ports are free.\`
+2. Press **Ctrl+C once**. Wait for the message `[Launcher] Shutdown complete. Both ports are free.`
 3. Leave the browser tab open or close it. The browser alone does **not** stop the servers.
-4. Run the same \`workspace/touchtable/touchtafel.bat\` command again to start a new session.
+4. Run the same `workspace/touchtable/touchtafel.bat` command again to start a new session.
 
 The launcher asks its two owned process groups to stop. If a process does not respond in a few seconds, it can force-stop **only the processes started by this launcher**. It then checks ports 3001 and 3002.
 
 You can verify the ports yourself with PowerShell:
 
-\`\`\`powershell
+```powershell
 Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue |
     Where-Object { $_.LocalPort -in 3001,3002 } |
     Select-Object LocalPort,OwningProcess
-\`\`\`
+```
 
-**Expected after stopping:** no rows. If \`PORT_STILL_IN_USE\` appears, an old or unrelated process may still be listening. Identify it before stopping anything; never indiscriminately kill every Python or Node.js process. If you press Ctrl+C while the launcher is **starting**, it should also clean up any service it has already created.
+**Expected after stopping:** no rows. If `PORT_STILL_IN_USE` appears, an old or unrelated process may still be listening. Identify it before stopping anything; never indiscriminately kill every Python or Node.js process. If you press Ctrl+C while the launcher is **starting**, it should also clean up any service it has already created.
 
 **Limitations:** This only covers a normal Ctrl+C or a handled startup failure. Force-closing the terminal, power loss or a sudden crash of the launcher can still leave child processes behind. This remains a development launcher, and shutdown on macOS/Linux has not been manually verified. No simulation results are saved or restored by this change.
 
