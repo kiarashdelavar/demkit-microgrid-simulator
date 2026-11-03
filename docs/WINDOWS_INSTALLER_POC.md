@@ -67,6 +67,41 @@ The current prototype targets **Windows x64 only**.
 
 If PyInstaller misses a dynamic Python dependency, record the error and fix the packaging setup. Do not change the DEMKit model just to make packaging pass.
 
+## If Electron says the packaged Python backend stopped
+
+This happened in the **first local installation test**. It means Electron started, but
+the bundled Python process exited before opening port 3001. **The exact error is
+not known yet.** Do not assume the normal development Python environment
+has the same problem.
+
+First, test the exact packaged executable from PowerShell in the project root:
+
+~~~powershell
+$env:DEMKIT_RUNTIME_ROOT = (Resolve-Path ".\packaging\windows\.build\runtime").Path
+& ".\packaging\windows\.build\demkit-backend\demkit-backend.exe"
+Remove-Item Env:DEMKIT_RUNTIME_ROOT -ErrorAction SilentlyContinue
+~~~
+
+If the executable fails, copy the **first traceback** or missing-file/message.
+If it stays running and starts DEMKit, press Ctrl+C to stop it; check that
+port 3001 is free before trying Electron again.
+
+The updated Electron wrapper also saves the packaged backend's initial
+stdout/stderr to a local file on newly built installs:
+
+    %APPDATA%\<Electron application name>\logs\backend-startup.log
+
+The updated error dialog displays the **full log path**. This logging change
+requires **building and installing a new prototype** to take effect; the
+previously installed 0.1.0 version cannot magically show these diagnostics.
+Do not publish or upload these logs without checking for credentials,
+private paths, or other sensitive information.
+
+A common issue with PyInstaller is **dynamic imports**: DEMKit uses
+\`runpy.run_path\` and \`importlib.import_module\` for model code, so the
+packager may not automatically detect every dependency. Only adjust
+hidden imports after identifying the actual missing module from the traceback.
+
 ## Important limitations
 
 - **Licensing:** The inherited DEMKit code has non-commercial/scientific-use notices. We need permission from the rights holders before distributing the binaries. Keep the inherited licence documents with the files.
