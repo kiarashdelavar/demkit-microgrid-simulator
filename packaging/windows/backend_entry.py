@@ -9,6 +9,24 @@ import runpy
 import sys
 
 
+def configure_import_paths(root: Path) -> None:
+    """Make the dynamically loaded DEMKit code importable when frozen.
+
+    The model imports modules two ways:
+      - from hosts.touchtable... (demkittt/components on sys.path)
+      - from components.ctrl... (demkittt itself on sys.path)
+    PyInstaller does not automatically add the runtime working directory.
+    """
+    for location in (
+        root / "demkittt",
+        root / "demkittt" / "components",
+        root / "workspace" / "touchtable" / "model",
+    ):
+        path = str(location)
+        if path not in sys.path:
+            sys.path.insert(0, path)
+
+
 def main():
     raw = os.environ.get("DEMKIT_RUNTIME_ROOT")
     if not raw:
@@ -26,8 +44,7 @@ def main():
 
     # DEMKit dynamically loads source files and composes a model at runtime.
     # These directories are writable user-data copies, not files inside asar.
-    sys.path.insert(0, str(components))
-    sys.path.insert(0, str(model))
+    configure_import_paths(root)
     os.chdir(str(root / "demkittt"))
     sys.argv = [str(script), "-f", "touchtable/model", "-m", "touchtable"]
     runpy.run_path(str(script), run_name="__main__")
