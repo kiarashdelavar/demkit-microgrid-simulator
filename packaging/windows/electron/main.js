@@ -17,6 +17,35 @@ const TIMEOUT_MS = 90000;
 let python = null;
 let webServer = null;
 let window = null;
+let backendLogPath = null;
+let collectingStartupLog = false;
+let startupLogBytes = 0;
+const MAX_STARTUP_LOG_BYTES = 128 * 1024;
+
+function beginBackendLog() {
+  // User-specific path; never write logs or runtime state inside Program Files.
+  const logsDir = path.join(app.getPath("userData"), "logs");
+  fs.mkdirSync(logsDir, { recursive: true });
+  backendLogPath = path.join(logsDir, "backend-startup.log");
+  fs.writeFileSync(backendLogPath, "[DEMKit] Packaged backend startup log\n", { mode: 0o600 });
+  startupLogBytes = 0;
+  collectingStartupLog = true;
+}
+
+function captureBackendOutput(channel, chunk) {
+  if (!collectingStartupLog || !backendLogPath) return;
+  const text = String(chunk);
+  const remaining = MAX_STARTUP_LOG_BYTES - startupLogBytes;
+  if (remaining <= 0) return;
+  const message = "[" + channel + "] " + text;
+  const portion = Buffer.from(message, "utf8").subarray(0, remaining);
+  startupLogBytes += portion.length;
+  try {
+    fs.appendFileSync(backendLogPath, portion);
+  } catch (error) {
+    console.error("Cannot save backend diagnostics:", error.message);
+  }
+}
 
 const hasInstanceLock = app.requestSingleInstanceLock();
 if (!hasInstanceLock) {
@@ -58,7 +87,11 @@ async function waitForHttp(port, require200, name) {
   const deadline = Date.now() + TIMEOUT_MS;
   while (Date.now() < deadline) {
     if (python && python.exitCode !== null) {
-      throw new Error("The packaged Python backend stopped before startup finished.");
+      throw new Error(
+        "The packaged Python backend stopped before startup finished " +
+        "(exit code " + python.exitCode + ")." +
+        (backendLogPath ? "\n\nDiagnostic log:\n" + backendLogPath : "")
+      );
     }
     if (await httpIsReady(port, require200)) return;
     await new Promise((resolve) => setTimeout(resolve, 400));
@@ -122,16 +155,30 @@ async function startDesktop() {
     throw new Error("The packaged web application is missing. Rebuild the prototype.");
   }
 
+  beginBackendLog();
   python = childProcess.spawn(backendExe, [], {
     cwd: runtime,
     windowsHide: true,
     stdio: ["ignore", "pipe", "pipe"],
     env: { ...process.env, DEMKIT_RUNTIME_ROOT: runtime },
   });
-  python.stdout.on("data", (data) => { console.log("[DEMKit]", String(data)); });
-  python.stderr.on("data", (data) => { console.error("[DEMKit]", String(data)); });
-  python.on("error", (error) => { console.error("Backend process error:", error.message); });
-  await waitForHttp(BACKEND_PORT, false, "DEMKit");
+  python.stdout.on("data", (data) => {
+    captureBackendOutput("stdout", data);
+    console.log("[DEMKit]", String(data));
+  });
+  python.stderr.on("data", (data) => {
+    captureBackendOutput("stderr", data);
+    console.error("[DEMKit]", String(data));
+  });
+  python.on("error", (error) => {
+    captureBackendOutput("process error", Buffer.from(error.message));
+    console.error("Backend process error:", error.message);
+  });
+  try {
+    await waitForHttp(BACKEND_PORT, false, "DEMKit");
+  } finally {
+    collectingStartupLog = false;
+  }
 
   // Electron already contains Node.js, so there is no separate Node runtime
   // that students need to install. Use the unchanged Express/Socket.IO app.
