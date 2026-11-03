@@ -97,6 +97,28 @@ previously installed 0.1.0 version cannot magically show these diagnostics.
 Do not publish or upload these logs without checking for credentials,
 private paths, or other sensitive information.
 
+**Confirmed in the first prototype build:** The packaged backend raised
+`ModuleNotFoundError: No module named 'components'` while importing
+`components.ctrl.auction.btsAuctionCtrl`. The runtime contained the DEMKit
+component files, but the frozen entry point added the `components` directory
+to `sys.path` without also adding its **parent**, `demkittt`. That parent is
+required for `from components...` imports.
+
+The BK-10 branch now adds the writable runtime's `demkittt` root to the Python
+module search path and has a regression test for the import style. This fix
+is **not verified in the rebuilt executable yet**.
+
+After fetching the BK-10 branch, first run:
+
+~~~powershell
+.\.venv\Scripts\python.exe -m unittest discover -s tests -p "test_windows_packaging.py"
+~~~
+
+Expected: 4 tests, OK. Then rerun the build and test the newly frozen Python
+executable from PowerShell **before reinstalling Electron**. If it starts and
+listens on port 3001, use Ctrl+C and check the port is free before running the
+new installer.
+
 A common issue with PyInstaller is **dynamic imports**: DEMKit uses
 \`runpy.run_path\` and \`importlib.import_module\` for model code, so the
 packager may not automatically detect every dependency. Only adjust
