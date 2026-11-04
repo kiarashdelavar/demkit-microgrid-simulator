@@ -41,6 +41,15 @@ if (-not $npm) {
                     } elseif ($report.metadata -and $report.metadata.vulnerabilities) {
                         $v = $report.metadata.vulnerabilities
                         Write-Host ("${Label}: Critical={0}, High={1}, Moderate={2}, Low={3}, Info={4}, Total={5}" -f $v.critical, $v.high, $v.moderate, $v.low, $v.info, $v.total)
+                        if ($report.vulnerabilities) {
+                            $top = @($report.vulnerabilities.PSObject.Properties |
+                                Where-Object { $_.Value.severity -in @('critical', 'high') } |
+                                Select-Object -First 12 |
+                                ForEach-Object { "$($_.Name) ($($_.Value.severity))" })
+                            if ($top.Count -gt 0) {
+                                Write-Host ("${Label}: High/critical packages (first 12): " + ($top -join ', '))
+                            }
+                        }
                     } else {
                         Write-Warning "${Label}: No vulnerability summary found; inspect the JSON report for the error or report format."
                     }
