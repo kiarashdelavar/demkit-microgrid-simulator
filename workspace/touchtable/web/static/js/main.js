@@ -218,8 +218,14 @@ window.addEventListener('click', (event) => {
 });
 
 function repairCables(event) {
+    // Cable coordinates are measured inside the 1920x1080 canvas.
+    // After scrolling, clientX/clientY are viewport coordinates, so
+    // subtract the canvas position before checking a cable hit.
+    const bounds = c.getBoundingClientRect();
+    const x = event.clientX - bounds.left;
+    const y = event.clientY - bounds.top;
     for (let cable of network.cables) {
-        if (cable.clicked(event.clientX, event.clientY) && cable.burned) {
+        if (cable.clicked(x, y) && cable.burned) {
             fixCable(cable.name);
 			break;
         }
