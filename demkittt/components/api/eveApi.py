@@ -23,6 +23,7 @@
 import calendar
 import datetime
 import time
+import os
 # FIXME: including pytz would be awesome
 
 
@@ -71,7 +72,11 @@ class EveApi:
 		self.addRoutes()
 
 		#start the API
-		self.app.run(port=self.port, host='0.0.0.0', debug=False) #Note: Debug is NOT working because of my hacking skills (Gerwin)
+		# Desktop and local development use loopback by default. The old
+		# all-interfaces binding exposed simulation-changing routes to the LAN.
+		# A supervised touch-table/network deployment must opt in explicitly.
+		bind_host = os.environ.get("DEMKIT_API_HOST", "127.0.0.1")
+		self.app.run(port=self.port, host=bind_host, debug=False)
 
 
 ### API INTERFACE FROM HERE ON ###
