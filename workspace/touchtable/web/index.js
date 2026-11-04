@@ -405,10 +405,10 @@ function addHeatpump(config, acknowledge) {
 
 
 const PORT = process.env.PORT || 3002;
-const WEB_HOST = process.env.WEB_HOST;
-// A packaged desktop app binds to loopback only; keep existing development
-// behavior when WEB_HOST is not configured.
-http.listen(PORT, WEB_HOST || undefined, () => {
+// This local desktop game is not intended to be reachable from the LAN.
+// For a supervised networked touch-table, configure WEB_HOST explicitly.
+const WEB_HOST = process.env.WEB_HOST || '127.0.0.1';
+http.listen(PORT, WEB_HOST, () => {
     console.log("Server running on port " + PORT );
 });
 
