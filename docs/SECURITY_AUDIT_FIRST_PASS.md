@@ -99,6 +99,17 @@ The JSON reports are local-only in `security-audit-local/`. Next review the rele
 
 **Release decision unchanged:** Windows/macOS/Linux installers should not be shared with students until relevant high-risk runtime findings, local HTTP/Socket.IO access and redistribution rights are resolved. The new loopback binding is only a first mitigation.
 
+## Advisory detail received — Python and direct web dependencies
+
+The developer extracted the package-level audit output from the JSON files:
+
+- **Python:** `certifi 2026.7.22`, with advisory **`PYSEC-2026-4320`** listed **twice**, each time proposing `2026.10.18` as the first fixed version. There is **one unique advisory ID in the rows shared**, not two different Python vulnerabilities. The earlier `pip-audit` count of 2 needs reconciliation with its detailed report. The advisory describes the emSign certificate-authority incident ([OSV](https://osv.dev/vulnerability/PYSEC-2026-4320)). The certifi maintainers recommend upgrading to **2026.10.19 or later**; `2026.10.19` is published on [PyPI](https://pypi.org/project/certifi/2026.10.19/).
+- **Fix prepared, not verified:** add `certifi>=2026.10.19` to `requirements.txt` in this security PR. The existing local virtual environment and any already-installed Windows EXE **are not updated by a Git commit**. The developer must update their virtualenv and rebuild the installer, then rerun `pip-audit`.
+- **Web:** all 15 high/critical affected packages from the developer's report: `body-parser`, `engine.io`, `engine.io-client`, `express`, `form-data`, `json-schema`, `jsprim`, `path-to-regexp`, `proxy-addr`, `qs`, `request`, `socket.io`, `socket.io-parser`, `ws`, `xmlhttprequest-ssl`.
+- The direct vulnerable package `request` reports **`fixAvailable=false`**. The other named direct packages `express`, `body-parser`, and `socket.io` report fixes available, but versions and upgrade compatibility still need review. A separate [Issue #37](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/37) tracks a controlled replacement for `request` and regression testing.
+
+**Release decision unchanged:** the Python patch is a targeted mitigation only; 24 npm web findings and insecure local command interfaces still require separate fixes and test evidence.
+
 ## Next security steps
 
 1. **Capture actual package findings.** Record dependency names, versions, advisories, severity, fix candidates, and whether each package is inside the shipped installer. Do not use historical vulnerability counts as current evidence.
