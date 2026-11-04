@@ -138,6 +138,7 @@ Roadmap order and scope are **proposed**, subject to supervisor feedback, techni
 - [Student installer tool research and ranking (BK-23)](docs/PACKAGING_TOOL_RESEARCH.md)
 - [Windows installer first prototype (BK-10 — build and test guide)](docs/WINDOWS_INSTALLER_POC.md)
 - [Release readiness for Windows, macOS and Linux — licences, security and platform tests](docs/RELEASE_READINESS.md)
+- [Initial security audit — confirmed source findings and Windows test instructions](docs/SECURITY_AUDIT_FIRST_PASS.md)
 - Teacher quick start and classroom activity (BK-13): [Markdown](docs/TEACHER_QUICK_START.md) | [PDF](docs/TEACHER_QUICK_START.pdf)
 - Developer quick start and handover (BK-13): [Markdown](docs/DEVELOPER_QUICK_START.md) | [PDF](docs/DEVELOPER_QUICK_START.pdf)
 - [Local installation and configuration guide](docs/CONFIGURATION_GUIDE.md)

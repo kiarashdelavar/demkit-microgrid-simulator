@@ -249,6 +249,8 @@ def run(check_only: bool = False) -> int:
 
         env = os.environ.copy()
         env.setdefault("DEM_HOST", "127.0.0.1")
+        env.setdefault("DEMKIT_API_HOST", "127.0.0.1")
+        env.setdefault("WEB_HOST", "127.0.0.1")
         print(f"[Launcher] Project: {ROOT}", flush=True)
         print("[Launcher] Starting Python DEMKit...", flush=True)
         backend = start_child(
