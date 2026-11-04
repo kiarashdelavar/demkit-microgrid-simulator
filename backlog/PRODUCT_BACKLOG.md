@@ -25,6 +25,8 @@
 | BK-08 | P0 | Add readiness checks and useful startup diagnostics | Implemented (PR #22 merged) | BK-07 |
 | BK-09 | P0 | Ensure clean shutdown and repeatable restart | Done (PR #24 merged) | BK-07 |
 | BK-23 | P0 | Research and rank student installers for Windows, macOS and Linux | Done | BK-04; before BK-10–BK-12 |
+| REL-01 | P0 | Confirm licensing, redistribution permission and required notices ([#32](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/32)) | Proposed — release blocker | BK-10–BK-12 |
+| SEC-01 | P0 | Audit bundled dependencies, local APIs and Electron security ([#33](https://github.com/kiarashdelavar/demkit-microgrid-simulator/issues/33)) | Proposed — release blocker | BK-10–BK-12 |
 | BK-10 | P1 | Package and validate a Windows build | In progress — prototype tested; release checks pending | BK-07–BK-09 |
 | BK-11 | P1 | Evaluate macOS packaging and test on supported hardware | Proposed | BK-07–BK-09 |
 | BK-12 | P1 | Evaluate Linux packaging and test on supported distribution | Proposed | BK-07–BK-09 |
@@ -166,4 +168,4 @@
 4. BK-04 — Runtime, dependency and hardcoded-path audit.
 5. Start BK-05/BK-06 technical investigation once the baseline is stable.
 
-**Release strategy:** Prioritise BK-07 through BK-10 for the first usable distribution. Treat BK-17 through BK-21 as selectable enhancements, not mandatory initial release requirements.
+**Release strategy:** Continue development prototypes on Windows, macOS and Linux, but **do not distribute installers publicly** until the shared licensing and security work is complete. Each platform also needs clean-install, uninstall, signing/trusted-distribution and shutdown testing. See [release readiness checklist](../docs/RELEASE_READINESS.md). Treat BK-17 through BK-21 as optional educational enhancements.
