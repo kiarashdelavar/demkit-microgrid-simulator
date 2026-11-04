@@ -2,7 +2,7 @@
 
 **An interactive educational microgrid simulation for exploring local electricity demand, solar generation, electric vehicles, battery storage, and grid constraints.**
 
-> **Project status — development / educational prototype.** The inherited Microgrid Touchtable runs locally in a Windows development environment, and a Windows one-action launcher has been manually tested; packaged releases and macOS/Linux support have **not** yet been verified. Those are goals of this project, not existing release features.
+> **Project status — development / educational prototype.** The browser simulator and one-action Windows launcher have been tested. An internal Windows Electron/PyInstaller installer has also been built and run successfully on the developer's computer, including device interactions and reopening from its shortcut. **This is not an approved student release:** clean-machine installation, uninstall, third-party licence/redistribution permissions and dependency security are still being checked. macOS and Linux installers remain future work.
 
 This repository builds on the **Microgrid Touchtable** handed over by [Boxing Jiang](https://github.com/Jiangboxing/touchtable-tool), which itself uses **DEMKit** (University of Twente), DEMKit-Touchtable, and webbased-visualizer components. The current assignment focuses on making the simulator easier to install, more reliable, and more useful for students and teachers. See [credits and licensing](#credits-and-licensing).
 
@@ -29,8 +29,8 @@ These are **features present in the inherited code**, not a claim that every sce
 | Area | Intended outcome | Current status |
 | --- | --- | --- |
 | Reproducible setup | Document and stabilise Python/Node dependencies and configuration | Planned |
-| One-action startup | Launch backend and frontend, check readiness, open the interface, and stop cleanly | Windows development prototype tested — BK-07 complete; BK-08/BK-09 pending |
-| Easier distribution | Produce a usable Windows installer or portable build | Planned |
+| One-action startup | Launch backend and frontend, check readiness, open the interface, and stop cleanly | BK-07–BK-09 merged and Windows user-tested |
+| Easier distribution | Produce a usable Windows installer or portable build | Internal prototype works on developer Windows PC; clean-machine/release tests pending |
 | Cross-platform support | Investigate, implement, and validate macOS and Linux builds where feasible | Planned — not supported claims |
 | Reliability | Add smoke tests, basic automated tests, helpful errors, and recovery behaviour | Planned |
 | Classroom usability | Improve clarity, accessibility, and teacher/student onboarding | Planned |
@@ -137,6 +137,8 @@ Roadmap order and scope are **proposed**, subject to supervisor feedback, techni
 - [Dependency and configuration audit (BK-04)](docs/DEPENDENCY_AUDIT.md)
 - [Student installer tool research and ranking (BK-23)](docs/PACKAGING_TOOL_RESEARCH.md)
 - [Windows installer first prototype (BK-10 — build and test guide)](docs/WINDOWS_INSTALLER_POC.md)
+- [Teacher quick start and classroom activity (BK-13)](docs/TEACHER_QUICK_START.md)
+- [Developer quick start and handover (BK-13)](docs/DEVELOPER_QUICK_START.md)
 - [Local installation and configuration guide](docs/CONFIGURATION_GUIDE.md)
 - [Prioritised product backlog](backlog/PRODUCT_BACKLOG.md)
 - [Previous developer's technical handover](HANDOVER.md)
