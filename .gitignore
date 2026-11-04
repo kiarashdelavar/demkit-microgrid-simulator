@@ -25,3 +25,6 @@ packaging/windows/.build/
 packaging/windows/dist/
 packaging/windows/electron/node_modules/
 packaging/windows/electron/dist/
+
+# Locally generated security scans (may contain file paths / environment details)
+security-audit-local/
