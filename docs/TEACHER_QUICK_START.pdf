@@ -1,0 +1,161 @@
+%PDF-1.4
+%DEMKit
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Count 3 /Kids [6 0 R 8 0 R 10 0 R] >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 5317 >>
+stream
+BT /F2 19.50 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 781.00 Tm (DEMKit Microgrid - Quick Start for Teachers) Tj ET
+0.1 0.43 0.46 rg 50 745.50 66 2 re f
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 729.50 Tm (Status: internal classroom evaluation guide \(Windows prototype\).) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 710.20 Tm (This is a short guide for trying the simulation with students and giving feedback. The Windows) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 697.20 Tm (desktop prototype works on the developer's computer, but it has not been approved for general) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 684.20 Tm (distribution. Installation on a clean computer without Python or Node.js, uninstall behaviour,) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 671.20 Tm (dependency security and redistribution rights still need checking. Use only an installation supplied) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 658.20 Tm (through an approved internal test.) Tj ET
+BT /F2 11.50 Tf 0.1 0.43 0.46 rg 1 0 0 1 50.00 627.90 Tm (What is the tool?) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 607.40 Tm (The simulator shows a small neighbourhood with six houses connected to an electricity grid. Students) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 594.40 Tm (can try EV chargers, solar panels, batteries and household devices, then see how the electricity) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 581.40 Tm (demand and local production change.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 562.10 Tm (The point is to experiment and discuss, not to predict exact electricity costs or the real capacity) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 549.10 Tm (of a particular neighbourhood.) Tj ET
+BT /F2 11.50 Tf 0.1 0.43 0.46 rg 1 0 0 1 50.00 518.80 Tm (Open the simulation) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 498.30 Tm (1. On an approved test computer, open DEMKit Microgrid Prototype from the Windows desktop or) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 485.70 Tm (Start menu.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 466.80 Tm (2. Wait until the game appears. You do not need to open a separate Python or Node.js) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 454.20 Tm (terminal.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 435.30 Tm (3. Read the introduction and click Start Mission.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 416.40 Tm (4. The simulation shows the houses, a clock, transformer reading, device choices and a coin) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 403.80 Tm (budget.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 384.90 Tm (The Electron window can be smaller than the full 1920 x 1080 game board. Use the mouse wheel,) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 371.90 Tm (touchpad or scrollbars to see the lower houses or the right side. This scrolling change is part of) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 358.90 Tm (the latest development code; the installed version must be rebuilt after that change to include it.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 339.60 Tm (If the program shows a startup error, stop and report the error message to the project developer.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 326.60 Tm (Don't install extra software or dismiss security warnings just to make it work.) Tj ET
+BT /F2 11.50 Tf 0.1 0.43 0.46 rg 1 0 0 1 50.00 296.30 Tm (Try a simple activity \(10-15 minutes\)) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 275.80 Tm (1. Start with one house. Look at its current load and power.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 256.90 Tm (2. Add an EV charger. Drag the EV icon from the device area into a house. See whether its) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 244.30 Tm (power and the coin budget change.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 225.40 Tm (3. Add solar panels. Compare the house's reading with and without solar production. Output) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 212.80 Tm (can depend on the simulated time of day.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 193.90 Tm (4. Add a battery. Try the Solar, Smart, plus and minus controls. A battery does not always) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 181.30 Tm (change immediately: it depends on charging state and demand.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 162.40 Tm (5. Check the goals. Read the current goal and complete it. Note any coin reward.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 143.50 Tm (6. Look at the grid. Compare load and power between houses and watch for warnings. An) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 130.90 Tm (overload may not happen in every short session.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 112.00 Tm (The displayed device prices include EV charger: 10 coins, solar panel: 10 coins, battery: 30 coins) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 99.00 Tm (in the tested game version. Coins, house slots and goals are game mechanics, not real purchase) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 86.00 Tm (prices.) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 9 0 R >>
+endobj
+9 0 obj
+<< /Length 5651 >>
+stream
+BT /F2 11.50 Tf 0.1 0.43 0.46 rg 1 0 0 1 50.00 776.00 Tm (Things to look at while playing) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 755.50 Tm (- House load % and Power W: changes when devices use or produce electricity.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 736.60 Tm (- Transformer A: a reading for the shared electricity network.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 717.70 Tm (- Coins and house slots: limits on what students can buy and place in the game.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 698.80 Tm (- Battery modes: charging/discharging behaviour may vary with demand and solar.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 679.90 Tm (- Overload warning: something to discuss about network capacity; don't force a failure if it) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 667.30 Tm (doesn't appear.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 648.40 Tm (- Time and season: help explain why demand or solar generation changes.) Tj ET
+BT /F2 11.50 Tf 0.1 0.43 0.46 rg 1 0 0 1 50.00 618.50 Tm (Discussion after the activity \(5 minutes\)) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 598.00 Tm (Ask students:) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 578.70 Tm (1. What happened to the grid when we added EV chargers or other devices?) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 559.80 Tm (2. When did solar panels or batteries help, and when were they less useful?) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 540.90 Tm (3. Who could afford these technologies in a real neighbourhood, and who might be left out?) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 522.00 Tm (4. Who would pay for a stronger electricity network if it was overloaded?) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 503.10 Tm (5. What important real-world details are missing from this simple game?) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 484.20 Tm (The last three questions connect the exercise to fairness in the energy transition. The game's equal) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 471.20 Tm (starting budget does not mean all real households have equal money, housing choices or access to) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 458.20 Tm (technology.) Tj ET
+BT /F2 11.50 Tf 0.1 0.43 0.46 rg 1 0 0 1 50.00 427.90 Tm (At the end) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 407.40 Tm (Close the desktop application normally. The latest prototype has been tested reopening on the) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 394.40 Tm (original Windows computer, but saving progress across new launches is not a promised feature. Treat) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 381.40 Tm (each lesson as a new test session until reset/persistence is checked.) Tj ET
+BT /F2 11.50 Tf 0.1 0.43 0.46 rg 1 0 0 1 50.00 351.10 Tm (If something goes wrong) Tj ET
+0.95 0.97 0.975 rg 48 313.90 497 19.70 re f
+BT /F2 8.20 Tf 0.15 0.21 0.27 rg 1 0 0 1 53.00 323.60 Tm (Problem) Tj ET
+BT /F2 8.20 Tf 0.15 0.21 0.27 rg 1 0 0 1 231.00 323.60 Tm (What to do) Tj ET
+0.87 0.89 0.90 RG 0.45 w 48 312.90 m 545 312.90 l S
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 53.00 302.90 Tm (Only part of the) Tj ET
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 53.00 291.20 Tm (neighbourhood is visible) Tj ET
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 231.00 302.90 Tm (Use the scrollbars or mouse wheel; maximize the) Tj ET
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 231.00 291.20 Tm (window if useful.) Tj ET
+0.87 0.89 0.90 RG 0.45 w 48 280.50 m 545 280.50 l S
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 53.00 270.50 Tm (A device won't fit in a house) Tj ET
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 231.00 270.50 Tm (Check available slots, budget and whether the game) Tj ET
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 231.00 258.80 Tm (allows that action.) Tj ET
+0.87 0.89 0.90 RG 0.45 w 48 248.10 m 545 248.10 l S
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 53.00 238.10 Tm (Values don't change right) Tj ET
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 53.00 226.40 Tm (away) Tj ET
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 231.00 238.10 Tm (Check whether the simulation is running, and whether) Tj ET
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 231.00 226.40 Tm (the simulated conditions allow that device to act.) Tj ET
+0.87 0.89 0.90 RG 0.45 w 48 215.70 m 545 215.70 l S
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 53.00 205.70 Tm (App says it cannot start) Tj ET
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 231.00 205.70 Tm (Copy the exact message and send it to the developer.) Tj ET
+0.87 0.89 0.90 RG 0.45 w 48 195.00 m 545 195.00 l S
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 53.00 185.00 Tm (Web server disconnected) Tj ET
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 231.00 185.00 Tm (Close the application, make sure an older copy is) Tj ET
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 231.00 173.30 Tm (not running and try once more. Report repeated) Tj ET
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 231.00 161.60 Tm (failures.) Tj ET
+0.87 0.89 0.90 RG 0.45 w 48 150.90 m 545 150.90 l S
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 53.00 140.90 Tm (Windows shows an unknown) Tj ET
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 53.00 129.20 Tm (publisher or security block) Tj ET
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 231.00 140.90 Tm (Stop and contact the supervisor/developer. Do not) Tj ET
+BT /F1 8.20 Tf 0.34 0.4 0.45 rg 1 0 0 1 231.00 129.20 Tm (bypass a security block.) Tj ET
+0.87 0.89 0.90 RG 0.45 w 48 118.50 m 545 118.50 l S
+BT /F2 11.50 Tf 0.1 0.43 0.46 rg 1 0 0 1 50.00 104.50 Tm (Feedback for the project team) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 11 0 R >>
+endobj
+11 0 obj
+<< /Length 710 >>
+stream
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 787.00 Tm (After a small supervised test, note: How long did starting the app take? Could students reach all) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 774.00 Tm (six houses? Could they drag EV/solar/battery devices? Did the explanation make sense? What confused) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 761.00 Tm (them? Which new feature would help a lesson most?) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 741.70 Tm (Project: DEMKit Microgrid Touchtable - Saxion educational prototype. For technical setup and known) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 728.70 Tm (limitations, see the developer guide.) Tj ET
+endstream
+endobj
+xref
+0 12
+0000000000 65535 f 
+0000000017 00000 n 
+0000000066 00000 n 
+0000000136 00000 n 
+0000000206 00000 n 
+0000000281 00000 n 
+0000000349 00000 n 
+0000000501 00000 n 
+0000005869 00000 n 
+0000006021 00000 n 
+0000011723 00000 n 
+0000011877 00000 n 
+trailer
+<< /Size 12 /Root 1 0 R >>
+startxref
+12638
+%%EOF

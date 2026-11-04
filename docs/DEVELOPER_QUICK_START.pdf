@@ -1,0 +1,121 @@
+%PDF-1.4
+%DEMKit
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Count 2 /Kids [6 0 R 8 0 R] >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 4670 >>
+stream
+BT /F2 19.50 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 781.00 Tm (DEMKit - Quick Start for the Next Developer) Tj ET
+0.1 0.43 0.46 rg 50 745.50 66 2 re f
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 729.50 Tm (Status: handover for the current development prototype.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 710.20 Tm (This project has two ways to run DEMKit on Windows: the Python/Node.js developer launcher, and the) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 697.20 Tm (internal Electron installer prototype. The installer source has been merged into main, but release) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 684.20 Tm (testing is not finished.) Tj ET
+BT /F2 11.50 Tf 0.1 0.43 0.46 rg 1 0 0 1 50.00 653.90 Tm (Find the project) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 633.40 Tm (- Repository: https://github.com/kiarashdelavar/demkit-microgrid-simulator) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 614.50 Tm (- Technical setup: Configuration guide) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 595.60 Tm (- Architecture: System architecture) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 576.70 Tm (- Windows packaging: Installer build and test guide) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 557.80 Tm (- Prior tests: Sprint 1 test results) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 538.90 Tm (- Backlog: Product backlog) Tj ET
+BT /F2 11.50 Tf 0.1 0.43 0.46 rg 1 0 0 1 50.00 509.00 Tm (Run the development version on Windows) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 488.50 Tm (From the repository root, with Python 3.12, Node.js and the project dependencies already installed:) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 469.20 Tm (1. Follow the configuration guide to create .venv, install requirements.txt, install) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 456.60 Tm (workspace/touchtable/web dependencies, and copy the portable example config to) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 444.00 Tm (demkittt/conf/usrconf.py.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 425.10 Tm (2. Close old DEMKit servers using ports 3001 and 3002.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 406.20 Tm (3. Start both processes with:) Tj ET
+0.95 0.97 0.975 rg 48 371.60 497 19.70 re f
+BT /F3 8.00 Tf 0.34 0.4 0.45 rg 1 0 0 1 57.00 381.30 Tm (.\\workspace\\touchtable\\touchtafel.bat) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 365.60 Tm (4. The launcher checks the backend and web server, then opens http://localhost:3002.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 346.70 Tm (5. Press Ctrl+C in the launcher terminal to stop the processes.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 327.80 Tm (To check prerequisites without starting the app:) Tj ET
+0.95 0.97 0.975 rg 48 292.80 497 19.70 re f
+BT /F3 8.00 Tf 0.34 0.4 0.45 rg 1 0 0 1 57.00 302.50 Tm (.\\.venv\\Scripts\\python.exe .\\scripts\\launch_demkit.py --check) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 286.80 Tm (Run the launcher tests:) Tj ET
+0.95 0.97 0.975 rg 48 251.80 497 19.70 re f
+BT /F3 8.00 Tf 0.34 0.4 0.45 rg 1 0 0 1 57.00 261.50 Tm (.\\.venv\\Scripts\\python.exe -m unittest discover -s tests -p "test_launcher.py") Tj ET
+BT /F2 11.50 Tf 0.1 0.43 0.46 rg 1 0 0 1 50.00 234.80 Tm (Build the internal Windows prototype) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 214.30 Tm (This is a developer-only build; don't publish the result.) Tj ET
+0.95 0.97 0.975 rg 48 179.30 497 19.70 re f
+BT /F3 8.00 Tf 0.34 0.4 0.45 rg 1 0 0 1 57.00 189.00 Tm (.\\.venv\\Scripts\\python.exe -m unittest discover -s tests -p "test_windows_packaging.py") Tj ET
+0.95 0.97 0.975 rg 48 157.60 497 19.70 re f
+BT /F3 8.00 Tf 0.34 0.4 0.45 rg 1 0 0 1 57.00 167.30 Tm (.\\.venv\\Scripts\\python.exe .\\scripts\\build_windows_prototype.py) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 151.60 Tm (Read the full build guide before using these commands. The packaged backend is made with) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 138.60 Tm (PyInstaller; Electron contains a Node.js runtime and displays the existing browser game.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 119.30 Tm (The builder writes the output under packaging/windows/dist/. The installer was confirmed to work on) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 106.30 Tm (the original Windows development computer, including reopening from the desktop shortcut and) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 93.30 Tm (interacting with devices. That does not establish that it works on a clean computer.) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 9 0 R >>
+endobj
+9 0 obj
+<< /Length 3943 >>
+stream
+BT /F2 11.50 Tf 0.1 0.43 0.46 rg 1 0 0 1 50.00 776.00 Tm (What needs to be tested next) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 755.50 Tm (- BK-10: clean Windows x64 computer or VM without Python/Node.js installed; startup,) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 742.90 Tm (devices, shutdown, uninstall, and remaining application data.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 724.00 Tm (- BK-10: review third-party licences/redistribution permission, inherited web dependencies) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 711.40 Tm (and signing before student distribution.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 692.50 Tm (- BK-11 and BK-12: investigate and validate macOS and Linux separately; the Windows .exe) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 679.90 Tm (does not work there.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 661.00 Tm (- BK-13: ask a teacher/first-time user to follow the teacher guide and collect feedback.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 642.10 Tm (The simulation has a fixed 1920 x 1080 coordinate system. A scrolling change was tested and merged,) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 629.10 Tm (but an already-installed application only receives that change after rebuilding and reinstalling the) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 616.10 Tm (desktop package.) Tj ET
+BT /F2 11.50 Tf 0.1 0.43 0.46 rg 1 0 0 1 50.00 585.80 Tm (Known issues / practical limits) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 565.30 Tm (- InfluxDB logging is postponed; legacy connection warnings may appear even while the game) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 552.70 Tm (works.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 533.80 Tm (- The model dynamically loads Python components. The first frozen build failed because) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 521.20 Tm (components. could not be imported; the packaging entry now adds the correct parent directory) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 508.60 Tm (to sys.path.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 489.70 Tm (- If the frozen backend stops before startup, read the error log path from Electron's dialog) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 477.10 Tm (or run the packaged backend directly as described in the Windows packaging guide.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 458.20 Tm (- If an old port stays occupied, first identify it. Do not kill every Python or Node.js) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 445.60 Tm (process on the user's computer.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 426.70 Tm (- The inherited game does not model all real-world conditions, costs or unequal access to) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 414.10 Tm (energy technology.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 60.00 395.20 Tm (- Whether progress survives a full application restart is not a guaranteed feature.) Tj ET
+BT /F2 11.50 Tf 0.1 0.43 0.46 rg 1 0 0 1 50.00 365.30 Tm (Before handing over) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 344.80 Tm (Run the full simulation, make sure EV, solar and battery interactions work, and add a short note to) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 331.80 Tm (the relevant GitHub issue describing the environment, what was tested and any actual errors. Never) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 318.80 Tm (commit demkittt/conf/usrconf.py, credentials, built binaries or user-data folders.) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 299.50 Tm (Project scope: Make the existing simulator easier to install and teach with. Keep the energy engine) Tj ET
+BT /F1 9.10 Tf 0.15 0.21 0.27 rg 1 0 0 1 50.00 286.50 Tm (unchanged unless a specific, verified bug requires it.) Tj ET
+endstream
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000017 00000 n 
+0000000066 00000 n 
+0000000129 00000 n 
+0000000199 00000 n 
+0000000274 00000 n 
+0000000342 00000 n 
+0000000494 00000 n 
+0000005215 00000 n 
+0000005367 00000 n 
+trailer
+<< /Size 10 /Root 1 0 R >>
+startxref
+9361
+%%EOF

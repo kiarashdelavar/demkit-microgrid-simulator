@@ -22,13 +22,13 @@
 | BK-05 | P0 | Refactor machine-specific startup configuration | Done | BK-04 |
 | BK-06 | P0 | Investigate making InfluxDB logging optional | Deferred | BK-03, BK-04 |
 | BK-07 | P0 | Build one-action multi-process launcher | Done (PR #20 merged; Windows tested) | BK-05 |
-| BK-08 | P0 | Add readiness checks and useful startup diagnostics | In progress | BK-07 |
-| BK-09 | P0 | Ensure clean shutdown and repeatable restart | In progress | BK-07 |
+| BK-08 | P0 | Add readiness checks and useful startup diagnostics | Implemented (PR #22 merged) | BK-07 |
+| BK-09 | P0 | Ensure clean shutdown and repeatable restart | Done (PR #24 merged) | BK-07 |
 | BK-23 | P0 | Research and rank student installers for Windows, macOS and Linux | Done | BK-04; before BK-10–BK-12 |
-| BK-10 | P1 | Package and validate a Windows build | In progress — prototype not yet built | BK-07–BK-09 |
+| BK-10 | P1 | Package and validate a Windows build | In progress — prototype tested; release checks pending | BK-07–BK-09 |
 | BK-11 | P1 | Evaluate macOS packaging and test on supported hardware | Proposed | BK-07–BK-09 |
 | BK-12 | P1 | Evaluate Linux packaging and test on supported distribution | Proposed | BK-07–BK-09 |
-| BK-13 | P1 | Write teacher and developer installation guides | Proposed | BK-10 |
+| BK-13 | P1 | Write teacher and developer installation guides | In progress — draft guides need teacher feedback | BK-10 |
 | BK-14 | P1 | Automate regression and release smoke tests | Proposed | BK-03, BK-07 |
 | BK-15 | P1 | Improve visibility and accessibility of energy metrics | Proposed | BK-03 |
 | BK-16 | P1 | Gather classroom feedback and define educational acceptance criteria | Proposed | BK-03 |
