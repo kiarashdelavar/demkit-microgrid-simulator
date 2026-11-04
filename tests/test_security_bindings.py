@@ -33,5 +33,11 @@ class SecurityBindingTests(unittest.TestCase):
         self.assertIn('env.setdefault("WEB_HOST", "127.0.0.1")', source)
 
 
+    def test_python_requirements_include_patched_certifi(self):
+        """The Windows PyInstaller build uses requirements from this file."""
+        requirements = (ROOT / "requirements.txt").read_text(encoding="utf-8")
+        self.assertIn("certifi>=2026.10.19", requirements)
+
+
 if __name__ == "__main__":
     unittest.main()
