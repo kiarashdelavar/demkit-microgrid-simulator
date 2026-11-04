@@ -405,6 +405,12 @@ function addHeatpump(config, acknowledge) {
 
 
 const PORT = process.env.PORT || 3002;
-http.listen(PORT, () => {
+const WEB_HOST = process.env.WEB_HOST;
+// A packaged desktop app binds to loopback only; keep existing development
+// behavior when WEB_HOST is not configured.
+http.listen(PORT, WEB_HOST || undefined, () => {
     console.log("Server running on port " + PORT );
 });
+
+// Electron's main process can close the server on application shutdown.
+module.exports = http;

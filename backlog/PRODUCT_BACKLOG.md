@@ -25,7 +25,7 @@
 | BK-08 | P0 | Add readiness checks and useful startup diagnostics | In progress | BK-07 |
 | BK-09 | P0 | Ensure clean shutdown and repeatable restart | In progress | BK-07 |
 | BK-23 | P0 | Research and rank student installers for Windows, macOS and Linux | Done | BK-04; before BK-10–BK-12 |
-| BK-10 | P1 | Package and validate a Windows build | Proposed | BK-07–BK-09 |
+| BK-10 | P1 | Package and validate a Windows build | In progress — prototype not yet built | BK-07–BK-09 |
 | BK-11 | P1 | Evaluate macOS packaging and test on supported hardware | Proposed | BK-07–BK-09 |
 | BK-12 | P1 | Evaluate Linux packaging and test on supported distribution | Proposed | BK-07–BK-09 |
 | BK-13 | P1 | Write teacher and developer installation guides | Proposed | BK-10 |

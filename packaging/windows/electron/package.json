@@ -1,0 +1,53 @@
+{
+  "name": "demkit-microgrid-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Internal Windows packaging proof of concept for the inherited DEMKit Touchtable",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win nsis --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "45.2.1",
+    "electron-builder": "26.18.0"
+  },
+  "build": {
+    "appId": "nl.saxion.demkit.microgrid.prototype",
+    "productName": "DEMKit Microgrid Prototype",
+    "asar": true,
+    "directories": {
+      "output": "../dist"
+    },
+    "files": [
+      "main.js",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../.build/runtime",
+        "to": "runtime"
+      },
+      {
+        "from": "../.build/demkit-backend",
+        "to": "backend"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "publish": null
+  }
+}
