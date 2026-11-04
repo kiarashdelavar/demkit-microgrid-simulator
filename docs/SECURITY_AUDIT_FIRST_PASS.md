@@ -75,6 +75,30 @@ For local desktop use, both listeners should show **`127.0.0.1`** (not `0.0.0.0`
 
 A local-only listener is not proof of overall safety. We still need endpoint authorization, input validation, origin restrictions, and review of what the desktop app can read/write.
 
+## Local dependency-audit results — 4 November 2026
+
+The developer ran `scripts/run_security_audit.ps1` successfully on their Windows development machine after installing `pip-audit`. These numbers are copied from the terminal output; the detailed JSON reports have **not** yet been reviewed by the project team.
+
+| Environment | Critical | High | Moderate | Low | Other / unspecified | Total |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Inherited web application, `workspace/touchtable/web` | **8** | **7** | 5 | 4 | 0 | **24** |
+| Electron *build* environment, `packaging/windows/electron` | 0 | 0 | **6** | 0 | 0 | **6** |
+| Installed Python `.venv` (`pip-audit`) | — | — | — | — | **2 advisories in one installed package** | **2** |
+
+**Web packages named in the terminal's top-12 critical/high summary:** `body-parser`, `engine.io`, `engine.io-client`, `express`, `form-data`, `json-schema`, `jsprim`, `path-to-regexp`, `proxy-addr`, `qs`, `request`, `socket.io`. This list is truncated to the first 12; it is *not* an exhaustive advisory list.
+
+There are **32 reported audit findings in total** (24 + 6 + 2), but that does not mean 32 independently exploitable security flaws. npm's package-based counts and pip-audit's advisory count are different measures, and several affected packages may be linked through shared dependencies. The actual shipped runtime/build-only reachability must be checked before prioritizing individual fixes.
+
+**Not known from this terminal summary:** exact installed versions, npm advisory/GHSA IDs and affected dependency paths, whether each report entry has a non-breaking fix, the Python package name/advisory IDs, and which Electron entries are build-time only. No dependency fixes have been applied.
+
+The JSON reports are local-only in `security-audit-local/`. Next review the relevant metadata without committing raw environment details:
+
+- `web-npm-audit.json`: critical/high packages, whether direct or transitive, advisory links, and `fixAvailable`.
+- `electron-build-npm-audit.json`: six moderate entries, installed versions and whether present in the **distributed** app or only packaging workflow.
+- `python-pip-audit.json`: the single affected package, installed version, two advisory IDs and suggested fixed versions.
+
+**Release decision unchanged:** Windows/macOS/Linux installers should not be shared with students until relevant high-risk runtime findings, local HTTP/Socket.IO access and redistribution rights are resolved. The new loopback binding is only a first mitigation.
+
 ## Next security steps
 
 1. **Capture actual package findings.** Record dependency names, versions, advisories, severity, fix candidates, and whether each package is inside the shipped installer. Do not use historical vulnerability counts as current evidence.
