@@ -15,7 +15,7 @@ if (-not $npm) {
         param([string]$ProjectDir, [string]$Label)
         $lock = Join-Path $ProjectDir 'package-lock.json'
         if (-not (Test-Path $lock)) {
-            Write-Warning "$Label: package-lock.json is not tracked/present. Reproducible audit is blocked until a lockfile is reviewed and added."
+            Write-Warning "${Label}: package-lock.json is not tracked/present. Reproducible audit is blocked until a lockfile is reviewed and added."
             return
         }
         $jsonFile = Join-Path $outDir "$Label-npm-audit.json"
@@ -30,7 +30,7 @@ if (-not $npm) {
             } finally {
                 $ErrorActionPreference = $oldPreference
             }
-            Write-Host "$Label: npm audit exit code $exitCode. Result: $jsonFile"
+            Write-Host "${Label}: npm audit exit code $exitCode. Result: $jsonFile"
             if ($exitCode -ne 0) {
                 Write-Host 'This can mean vulnerabilities were found, or the registry was unreachable. Inspect the JSON; do not assume either.'
             }
