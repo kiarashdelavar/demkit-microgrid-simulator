@@ -11,7 +11,8 @@
     "test": "node testClient.js",
     "build": "docker build -t webbased-visualizer .",
     "start": "npm run build && docker run --env-file=.env -p 3002:3002 -t -i --init webbased-visualizer",
-    "start:deamon": "npm run build && docker run --env-file=.env -p 3002:3002 -d -t webbased-visualizer"
+    "start:deamon": "npm run build && docker run --env-file=.env -p 3002:3002 -d -t webbased-visualizer",
+    "test:http": "node tests/test_demkit_http_client.js"
   },
   "author": "",
   "license": "ISC",
@@ -19,7 +20,6 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "request": "^2.88.0",
     "socket.io": "^2.2.0"
   }
 }
