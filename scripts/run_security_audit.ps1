@@ -31,8 +31,25 @@ if (-not $npm) {
                 $ErrorActionPreference = $oldPreference
             }
             Write-Host "${Label}: npm audit exit code $exitCode. Result: $jsonFile"
+            # npm audit may exit 1 when it finds advisories. Read the report
+            # before deciding whether the command failed or found vulnerabilities.
+            if (Test-Path $jsonFile) {
+                try {
+                    $report = Get-Content -Path $jsonFile -Raw | ConvertFrom-Json
+                    if ($report.error) {
+                        Write-Warning ("${Label}: npm audit returned an error: " + $report.error.code)
+                    } elseif ($report.metadata -and $report.metadata.vulnerabilities) {
+                        $v = $report.metadata.vulnerabilities
+                        Write-Host ("${Label}: Critical={0}, High={1}, Moderate={2}, Low={3}, Info={4}, Total={5}" -f $v.critical, $v.high, $v.moderate, $v.low, $v.info, $v.total)
+                    } else {
+                        Write-Warning "${Label}: No vulnerability summary found; inspect the JSON report for the error or report format."
+                    }
+                } catch {
+                    Write-Warning "${Label}: Could not parse npm audit JSON: $($_.Exception.Message)"
+                }
+            }
             if ($exitCode -ne 0) {
-                Write-Host 'This can mean vulnerabilities were found, or the registry was unreachable. Inspect the JSON; do not assume either.'
+                Write-Host 'Non-zero exit may mean advisories or an audit error. Check the JSON summary above.'
             }
         } finally {
             Pop-Location
@@ -45,20 +62,46 @@ if (-not $npm) {
 
 $python = Join-Path $root '.venv\Scripts\python.exe'
 if (Test-Path $python) {
-    $jsonFile = Join-Path $outDir 'python-pip-audit.json'
-    Write-Host 'Auditing the current project Python virtual environment (read-only)...'
+    # Check installation first. Python also exits 1 for 'No module named
+    # pip_audit', so exit code 1 alone must NOT be treated as an audit result.
     $oldPreference = $ErrorActionPreference
     $ErrorActionPreference = 'Continue'
     try {
-        & $python -m pip_audit --local --format json --output $jsonFile
-        $exitCode = $LASTEXITCODE
+        & $python -m pip show pip-audit 1> $null 2> $null
+        $available = ($LASTEXITCODE -eq 0)
     } finally {
         $ErrorActionPreference = $oldPreference
     }
-    if ($exitCode -eq 0 -or $exitCode -eq 1) {
-        Write-Host "pip-audit exit code $exitCode. Result (if saved): $jsonFile"
+    if (-not $available) {
+        Write-Warning 'pip-audit is not installed in .venv. Install the audit tool with: .\.venv\Scripts\python.exe -m pip install pip-audit'
+        Write-Warning 'Python dependency audit NOT RUN; no Python vulnerability result exists yet.'
     } else {
-        Write-Warning "pip-audit could not run (exit $exitCode). Check whether it is installed in .venv: .\.venv\Scripts\python.exe -m pip install pip-audit"
+        $jsonFile = Join-Path $outDir 'python-pip-audit.json'
+        Write-Host 'Auditing the current project Python virtual environment (read-only)...'
+        $oldPreference = $ErrorActionPreference
+        $ErrorActionPreference = 'Continue'
+        try {
+            & $python -m pip_audit --local --format json --output $jsonFile
+            $exitCode = $LASTEXITCODE
+        } finally {
+            $ErrorActionPreference = $oldPreference
+        }
+        if (Test-Path $jsonFile) {
+            Write-Host "pip-audit exit code $exitCode. Report: $jsonFile"
+            try {
+                $report = Get-Content -Path $jsonFile -Raw | ConvertFrom-Json
+                if ($report.dependencies) {
+                    $affected = @($report.dependencies | Where-Object { $_.vulns -and $_.vulns.Count -gt 0 })
+                    Write-Host ("Python: {0} affected installed packages (individual advisories may be more)." -f $affected.Count)
+                } else {
+                    Write-Host 'Python: Review JSON for dependencies and vulnerability details.'
+                }
+            } catch {
+                Write-Warning "Could not parse Python report: $($_.Exception.Message)"
+            }
+        } else {
+            Write-Warning "pip-audit exited $exitCode but did not create a JSON report. Check output and network access."
+        }
     }
 } else {
     Write-Warning 'Python virtual environment not found. Skip until .venv is set up.'
