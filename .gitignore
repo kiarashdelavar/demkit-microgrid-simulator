@@ -25,3 +25,6 @@ packaging/windows/.build/
 packaging/windows/dist/
 packaging/windows/electron/node_modules/
 packaging/windows/electron/dist/
+
+# Local audit reports can include machine-specific details; never commit them.
+security-audit-local/

@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 var cors = require('cors');
 var http = require('http').createServer(app);
 var io = require('socket.io')(http);
-const request = require('request');
+const request = require('./demkitHttpClient');
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
