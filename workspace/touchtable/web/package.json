@@ -8,7 +8,7 @@
     "npm": "6.7.0"
   },
   "scripts": {
-    "test": "node testClient.js",
+    "test": "npm run test:http",
     "build": "docker build -t webbased-visualizer .",
     "start": "npm run build && docker run --env-file=.env -p 3002:3002 -t -i --init webbased-visualizer",
     "start:deamon": "npm run build && docker run --env-file=.env -p 3002:3002 -d -t webbased-visualizer",

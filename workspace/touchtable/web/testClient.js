@@ -3,7 +3,8 @@ var app = express();
 const bodyParser = require("body-parser");
 var cors = require('cors');
 var http = require('http').createServer(app);
-const request = require('request');
+const request = require('./demkitHttpClient');
+const io = require('socket.io')(http);
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -11,8 +12,8 @@ app.use(bodyParser.json());
 
 app.use(cors());
 
-let DEMIp = "localhost"
-let DEMPort = 3001
+let DEMIp = process.env.DEM_HOST || '127.0.0.1';
+let DEMPort = process.env.DEM_PORT || '3001';
 let url = 'http://' + DEMIp + ':' + DEMPort + '/'
 let urlForTick = url + "tick";
 
@@ -97,6 +98,6 @@ function addDevice(settings){
 
 
 const PORT = process.env.PORT || 3002;
-http.listen(PORT, () => {
+http.listen(PORT, process.env.WEB_HOST || '127.0.0.1', () => {
     console.log("Server running on port " + PORT );
 });
