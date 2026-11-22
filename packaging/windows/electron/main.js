@@ -160,7 +160,11 @@ async function startDesktop() {
     cwd: runtime,
     windowsHide: true,
     stdio: ["ignore", "pipe", "pipe"],
-    env: { ...process.env, DEMKIT_RUNTIME_ROOT: runtime },
+    env: {
+      ...process.env,
+      DEMKIT_RUNTIME_ROOT: runtime,
+      DEMKIT_API_HOST: "127.0.0.1",
+    },
   });
   python.stdout.on("data", (data) => {
     captureBackendOutput("stdout", data);
