@@ -79,6 +79,8 @@ class WindowsPackagingTests(unittest.TestCase):
             (web / "node_modules" / "some-module" / "node_modules" / "nested").mkdir(parents=True)
             (web / "node_modules" / "some-module" / "index.js").write_text("ok")
             (web / "index.js").write_text("module.exports = {};\n")
+            adapter_source = "module.exports = {};\n"
+            (web / "demkitHttpClient.js").write_text(adapter_source)
             (web / "package.json").write_text("{}\n")
             staging = root / "build" / "runtime"
             with patch.object(builder, "ROOT", root):
@@ -91,7 +93,9 @@ class WindowsPackagingTests(unittest.TestCase):
             self.assertNotIn("secret", packaged.read_text())
             self.assertTrue((staging / "workspace" / "touchtable" / "model"
                              / "touchtable.py").exists())
-            self.assertTrue((staging / "workspace" / "touchtable" / "web"
+            staged_web = staging / "workspace" / "touchtable" / "web"
+            self.assertEqual((staged_web / "demkitHttpClient.js").read_text(), adapter_source)
+            self.assertTrue((staged_web
                              / "node_modules" / "some-module" / "node_modules"
                              / "nested").is_dir())
 
