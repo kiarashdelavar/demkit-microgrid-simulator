@@ -54,4 +54,5 @@ class ModelComposer():
 
 	def load(self):
 		print("Importing composed model: "+self.fileName)
+		importlib.invalidate_caches()
 		importlib.import_module(self.fileName)
