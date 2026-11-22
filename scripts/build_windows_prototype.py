@@ -55,7 +55,7 @@ def prepare_runtime() -> None:
         shutil.copytree(source, target, ignore=ignore_files)
 
     staged_web = RUNTIME / "workspace" / "touchtable" / "web"
-    for filename in ("index.js", "package.json"):
+    for filename in ("index.js", "package.json", "demkitHttpClient.js"):
         shutil.copy2(WEB_SRC / filename, staged_web / filename)
     shutil.copytree(WEB_SRC / "node_modules", staged_web / "node_modules",
                     ignore=ignore_package_cache)
