@@ -23,13 +23,16 @@ window.addEventListener('resize', fix_dpi)
 fix_dpi();
 
 
-let DEMData = null;
+let DEMData = typeof initialDemState === "undefined" ? null : initialDemState;
 let DEMDevices = {};
 let isMaster = true;
 
 var background = new Background();
 let network = new Network(MOCK_NETWORK);
 network.setNetwork(MOCK_NETWORK);
+if (DEMData) {
+    network.updateNetwork(DEMData.network);
+}
 
 let last = 10; //Date.now();
 let first = true;

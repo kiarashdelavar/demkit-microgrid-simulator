@@ -3389,6 +3389,10 @@
 	}
 
 	function refreshGameficationUI() {
+		if (!initialized) {
+			return;
+		}
+
 		if (budgetValueElement) {
 			budgetValueElement.textContent = budget;
 		}
