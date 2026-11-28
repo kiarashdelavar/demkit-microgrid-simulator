@@ -50,6 +50,35 @@ app.get('/graphs', (req, res) => {
   res.sendFile(__dirname + '/static/graphs.html');
 })
 
+app.get('/dem/startup-state.js', (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    const sendState = () => {
+        res.type('js').send('const initialDemState = ' + JSON.stringify(latestDemState) + ';');
+    };
+    if (latestDemState) {
+        return sendState();
+    }
+
+    request.get(url + 'dem/state', {timeout: 1000}, (err, response, body) => {
+        if (!latestDemState && !err && response.statusCode === 200) {
+            try {
+                const state = JSON.parse(body);
+                const network = state && state.network;
+                if (network && Array.isArray(network.nodes) &&
+                    Array.isArray(network.edges) && network.edges.length) {
+                    latestDemState = state;
+                }
+            } catch (error) {
+                console.error('Could not read the initial DEMKit state:', error.message);
+            }
+        }
+        if (!latestDemState) {
+            res.status(503);
+        }
+        sendState();
+    });
+});
+
 app.post('/dem/state', (req, res) => {
     latestDemState = req.body;
     io.sockets.emit('data', req.body);

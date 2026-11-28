@@ -69,10 +69,10 @@ function portIsOccupied(port) {
   });
 }
 
-function httpIsReady(port, require200) {
+function httpIsReady(port, require200, route) {
   return new Promise((resolve) => {
     const req = http.get({
-      hostname: "127.0.0.1", port, path: "/", timeout: 1200,
+      hostname: "127.0.0.1", port, path: route, timeout: 1200,
     }, (response) => {
       const code = response.statusCode || 0;
       response.resume();
@@ -83,7 +83,7 @@ function httpIsReady(port, require200) {
   });
 }
 
-async function waitForHttp(port, require200, name) {
+async function waitForHttp(port, require200, name, route = "/") {
   const deadline = Date.now() + TIMEOUT_MS;
   while (Date.now() < deadline) {
     if (python && python.exitCode !== null) {
@@ -93,7 +93,7 @@ async function waitForHttp(port, require200, name) {
         (backendLogPath ? "\n\nDiagnostic log:\n" + backendLogPath : "")
       );
     }
-    if (await httpIsReady(port, require200)) return;
+    if (await httpIsReady(port, require200, route)) return;
     await new Promise((resolve) => setTimeout(resolve, 400));
   }
   throw new Error(name + " did not respond in time. Check the packaged backend and data files.");
@@ -192,7 +192,7 @@ async function startDesktop() {
   process.env.WEB_HOST = "127.0.0.1";
   process.chdir(webDir);
   webServer = require(webScript);
-  await waitForHttp(WEB_PORT, true, "The web interface");
+  await waitForHttp(WEB_PORT, true, "The first grid readings", "/dem/startup-state.js");
 
   createWindow();
   await window.loadURL("http://127.0.0.1:" + WEB_PORT + "/");

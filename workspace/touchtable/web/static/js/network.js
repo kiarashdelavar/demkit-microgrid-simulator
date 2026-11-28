@@ -115,7 +115,7 @@ class Network {
 			if (netEdge.length == 1) {
 				cable.current = netEdge[0].current;
 				cable.direction = netEdge[0].direction || 1;
-				cable.burned = netEdge[0].burned;
+				cable.burned = netEdge[0].burned === true;
 			}
 		}
 
@@ -179,6 +179,7 @@ class Cable {
 		this.nodes = nodes;
 		this.ampacity = ampacity;
 		this.current = current;
+		this.burned = false;
 		this.direction = 1;
 		this.width = ampacity > 55 ? 24 : 14;
 		this.color = {r: 204, g: 204, b: 204};

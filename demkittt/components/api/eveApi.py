@@ -57,7 +57,7 @@ def _corsify_actual_response(response):
 	# return response
 
 class EveApi:
-	def __init__(self, host, port, address="http://localhost"):
+	def __init__(self, host, port, address="http://localhost", get_state=None):
 		self.host = host
 		self.port = port
 		self.address = address
@@ -70,6 +70,11 @@ class EveApi:
 
 		#Now load all functions
 		self.addRoutes()
+
+		if get_state is not None:
+			@self.app.route('/dem/state')
+			def dem_state():
+				return Response(get_state(), mimetype="application/json")
 
 		#start the API
 		# Desktop and local development use loopback by default. The old

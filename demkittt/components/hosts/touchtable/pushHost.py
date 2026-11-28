@@ -131,9 +131,12 @@ class PushHost(Host):
 		print("start")
 		Host.startup(self)
 
+		# Readings at the starting time are available before the clock runs.
+		self.timeTick(self.currentTime)
+		self.stateJson = self.serializeState()
 		self.runInThread(self, 'runSimulation')
 
-		self.restApi = EveApi(self, self.port, self.address)
+		self.restApi = EveApi(self, self.port, self.address, get_state=lambda: self.stateJson)
 
 	def timeTick(self,  time, absolute = True):
 		Host.timeTick(self, time, absolute)
@@ -157,7 +160,7 @@ class PushHost(Host):
 
 		self.postTickLogging(time)
 
-	def push(self):
+	def serializeState(self):
 		state = {
 			'host': {
 				'currentTime': self.currentTime,
@@ -237,6 +240,10 @@ class PushHost(Host):
 
 
 
+		return json.dumps(state, cls=ComplexEncoder)
+
+	def push(self):
+		self.stateJson = self.serializeState()
 		headers = {
 			'content-type': 'application/json',
 			'Access-Control-Allow-Origin': '*'
@@ -244,7 +251,7 @@ class PushHost(Host):
 
 		for client in self.clients:
 			try:
-				requests.post(client + '/dem/state', data=json.dumps(state, cls=ComplexEncoder), headers=headers)
+				requests.post(client + '/dem/state', data=self.stateJson, headers=headers)
 			except requests.exceptions.ConnectionError as e:
 				print('Can\'t reach client ' + client + ':\n' + str(e))
 				# This removes clients we cannot reach. I considered adding a removeClient endpoint,

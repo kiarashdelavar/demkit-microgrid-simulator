@@ -1227,7 +1227,7 @@
 			}
 		}
 
-		// Before DEMKit data arrives, estimate from the house cable current.
+		// If the meter reading is missing, estimate from the house cable current.
 		return loadInfo.current * 230;
 	}
 
@@ -2309,7 +2309,7 @@
 			"<div class=\"time-season-title\">Simulation</div>" +
 			"<div class=\"time-season-row\"><span>Time</span><b class=\"time-season-time\">--:--</b></div>" +
 			"<div class=\"time-season-row\"><span>Season</span><b class=\"time-season-season\">--</b></div>" +
-			"<div class=\"time-season-row time-season-transformer-row\"><span>Transformer</span><b class=\"transformer-current-amp\">0 A</b></div>";
+			"<div class=\"time-season-row time-season-transformer-row\"><span>Transformer</span><b class=\"transformer-current-amp\">—</b></div>";
 
 		board.appendChild(panel);
 		timeSeasonPanelElement = panel;
@@ -2474,14 +2474,14 @@
 			control.innerHTML =
 				"<div class=\"house-status-main\">" +
 				"<span class=\"house-status-name\">House " + (houseNumber + 1) + ":</span>" +
-				"<span>Load <b class=\"house-load-percent\">0%</b></span>" +
-				"<span>Power <b class=\"house-power-watt\">0 W</b></span>" +
+				"<span>Load <b class=\"house-load-percent\">—</b></span>" +
+				"<span>Power <b class=\"house-power-watt\">—</b></span>" +
 				"</div>" +
 				"<div class=\"house-status-row\">" +
 				"<span class=\"slot-count\">Slots <b class=\"slot-used\">0</b>/<b class=\"slot-max\">3</b></span>" +
 				"<button type=\"button\" data-slot-upgrade=\"" + houseNumber + "\">+ Slot -10</button>" +
 				"</div>" +
-				"<div class=\"house-load-tip\">Tip: this house has spare capacity.</div>";
+				"<div class=\"house-load-tip\">Waiting for grid data…</div>";
 
 			control.addEventListener("pointerdown", event => event.stopPropagation());
 			control.querySelector("button").addEventListener("click", event => {
@@ -3389,15 +3389,22 @@
 	}
 
 	function refreshGameficationUI() {
+		if (!initialized) {
+			return;
+		}
+
 		if (budgetValueElement) {
 			budgetValueElement.textContent = budget;
 		}
 
 		ensureBatteryStrategyControls();
 		updateLearningGoals();
-		updateTransformerStatusPanel();
 		updateTimeSeasonPanel();
-		updateRiskEvents();
+		let hasGridData = Boolean(DEMData?.network?.edges?.length);
+		if (hasGridData) {
+			updateTransformerStatusPanel();
+			updateRiskEvents();
+		}
 
 		for (let houseNumber = 0; houseNumber < houseCount(); houseNumber++) {
 			let control = document.getElementById("houseSlotControl" + houseNumber);
@@ -3406,13 +3413,20 @@
 			}
 
 			let used = getHouseDeviceCount(houseNumber);
-			let loadInfo = getHouseLoadInfo(houseNumber);
-			let powerWatts = getHousePowerWatts(houseNumber, loadInfo);
-			let loadPercent = Math.round(loadInfo.loadRatio * 100);
-
 			control.querySelector(".slot-used").textContent = used;
 			control.querySelector(".slot-max").textContent = houseSlots[houseNumber];
 			control.classList.toggle("full", used >= houseSlots[houseNumber]);
+
+			let button = control.querySelector("button");
+			button.disabled = budget < GAMEFICATION_CONFIG.slotUpgradeCost;
+
+			if (!hasGridData) {
+				continue;
+			}
+
+			let loadInfo = getHouseLoadInfo(houseNumber);
+			let powerWatts = getHousePowerWatts(houseNumber, loadInfo);
+			let loadPercent = Math.round(loadInfo.loadRatio * 100);
 			control.classList.toggle("load-safe", !loadInfo.burned && loadInfo.loadRatio < HOUSE_LOAD_CAUTION_THRESHOLD);
 			control.classList.toggle("load-caution", !loadInfo.burned && loadInfo.loadRatio >= HOUSE_LOAD_CAUTION_THRESHOLD && loadInfo.loadRatio < HOUSE_LOAD_WARNING_THRESHOLD);
 			control.classList.toggle("load-warning", !loadInfo.burned && loadInfo.loadRatio >= HOUSE_LOAD_WARNING_THRESHOLD);
@@ -3421,9 +3435,6 @@
 			control.querySelector(".house-load-percent").textContent = loadPercent + "%";
 			control.querySelector(".house-power-watt").textContent = formatPowerWatts(powerWatts);
 			control.querySelector(".house-load-tip").textContent = getHouseLoadTip(houseNumber, used, loadInfo);
-
-			let button = control.querySelector("button");
-			button.disabled = budget < GAMEFICATION_CONFIG.slotUpgradeCost;
 		}
 	}
 
