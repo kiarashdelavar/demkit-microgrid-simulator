@@ -10,6 +10,7 @@ const fs = require("fs");
 const http = require("http");
 const net = require("net");
 const path = require("path");
+const { name: packageName } = require("./package.json");
 
 const BACKEND_PORT = 3001;
 const WEB_PORT = 3002;
@@ -46,6 +47,11 @@ function captureBackendOutput(channel, chunk) {
     console.error("Cannot save backend diagnostics:", error.message);
   }
 }
+
+// Keep the profile in the same location as builds that used the npm package name.
+const userData = path.join(app.getPath("appData"), packageName);
+fs.mkdirSync(userData, { recursive: true });
+app.setPath("userData", userData);
 
 const hasInstanceLock = app.requestSingleInstanceLock();
 if (!hasInstanceLock) {
@@ -104,7 +110,7 @@ function getWritableRuntime() {
   const runtime = path.join(app.getPath("userData"), "runtime-" + app.getVersion());
   const complete = path.join(runtime, ".copied-ok");
   if (!fs.existsSync(complete)) {
-    // Only our versioned prototype runtime is replaced. Never modify
+    // Only our versioned application runtime is replaced. Never modify
     // another application directory or the installed Program Files files.
     fs.rmSync(runtime, { recursive: true, force: true });
     fs.cpSync(bundled, runtime, { recursive: true });
@@ -113,13 +119,16 @@ function getWritableRuntime() {
   return runtime;
 }
 
-function createWindow() {
+function createWindow(webDir) {
   window = new BrowserWindow({
     width: 1440,
     height: 900,
     minWidth: 960,
     minHeight: 600,
-    title: "DEMKit Microgrid Prototype",
+    show: false,
+    title: app.getName(),
+    icon: path.join(webDir, "static", "images", "saxion-logo.png"),
+    autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -127,6 +136,10 @@ function createWindow() {
     },
   });
   window.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
+  window.once("ready-to-show", () => {
+    window.maximize();
+    window.show();
+  });
   window.webContents.on("will-navigate", (event, url) => {
     if (url !== "http://127.0.0.1:3002/" && !url.startsWith("http://127.0.0.1:3002/")) {
       event.preventDefault();
@@ -137,7 +150,7 @@ function createWindow() {
 
 async function startDesktop() {
   if (!app.isPackaged) {
-    throw new Error("This prototype must first be packaged with the Windows build script.");
+    throw new Error("Package DEMKit Microgrid with the Windows build script first.");
   }
   if (await portIsOccupied(BACKEND_PORT) || await portIsOccupied(WEB_PORT)) {
     throw new Error("Ports 3001 or 3002 are already in use. Close earlier DEMKit servers first.");
@@ -145,14 +158,14 @@ async function startDesktop() {
 
   const backendExe = path.join(process.resourcesPath, "backend", "demkit-backend.exe");
   if (!fs.existsSync(backendExe)) {
-    throw new Error("The packaged Python backend is missing. Rebuild the Windows prototype.");
+    throw new Error("The packaged Python backend is missing. Rebuild the Windows installer.");
   }
 
   const runtime = getWritableRuntime();
   const webDir = path.join(runtime, "workspace", "touchtable", "web");
   const webScript = path.join(webDir, "index.js");
   if (!fs.existsSync(webScript)) {
-    throw new Error("The packaged web application is missing. Rebuild the prototype.");
+    throw new Error("The packaged web application is missing. Rebuild the Windows installer.");
   }
 
   beginBackendLog();
@@ -194,7 +207,9 @@ async function startDesktop() {
   webServer = require(webScript);
   await waitForHttp(WEB_PORT, true, "The first grid readings", "/dem/startup-state.js");
 
-  createWindow();
+  // Match the ID the installer uses for the Windows shortcuts.
+  app.setAppUserModelId("nl.saxion.demkit.microgrid.prototype");
+  createWindow(webDir);
   await window.loadURL("http://127.0.0.1:" + WEB_PORT + "/");
 }
 
@@ -223,9 +238,6 @@ app.on("window-all-closed", () => app.quit());
 
 if (hasInstanceLock) app.whenReady().then(startDesktop).catch((error) => {
   console.error("DEMKit desktop startup failed:", error);
-  dialog.showErrorBox(
-    "DEMKit could not start",
-    error.message + "\n\nThis is an internal Windows prototype, not a released installer.",
-  );
+  dialog.showErrorBox("DEMKit Microgrid could not start", error.message);
   app.quit();
 });

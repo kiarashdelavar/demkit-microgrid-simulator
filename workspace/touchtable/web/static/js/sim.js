@@ -4,25 +4,29 @@ let intervalId = -1;
 let fast = false;
 let pause = true;
 let controlled = 0;
+const gridModes = [
+	{ id: 'grid', label: 'Grid', event: 'controlOff', hint: 'Use the main power grid.' },
+	{ id: 'smart', label: 'Smart', event: 'controlOn', hint: 'The app helps devices use power at the right time.' },
+	{ id: 'island', label: 'Island', event: 'controlIsland', hint: 'Use only local power.' },
+];
+const gridModeHint = document.getElementById('gridModeHint');
+gridModeHint.textContent = gridModes[controlled].hint;
+let gridModeHintTimeout;
 
 //startSim()
 
 function setSimulationButtonState(isRunning) {
-	let playButton = document.getElementById('playButton');
+	const playButton = document.getElementById('playButton');
 	if (!playButton) {
 		return;
 	}
 
-	if (isRunning) {
-		intervalId = 500;
-		playButton.innerHTML = '&#10074;&#10074;';
-		pause = false;
-	}
-	else {
-		intervalId = -1;
-		playButton.innerHTML = '&#9658;';
-		pause = true;
-	}
+	const action = isRunning ? 'Pause' : 'Play';
+	intervalId = isRunning ? 500 : -1;
+	pause = !isRunning;
+	playButton.querySelector('.simulation-button-icon').textContent = isRunning ? '❚❚' : '▶';
+	playButton.querySelector('.simulation-button-label').textContent = action;
+	playButton.setAttribute('aria-label', action + ' simulation');
 }
 
 function playSimulation(event) {
@@ -64,21 +68,19 @@ socket.on('connect', function() {
 });
 
 function toggleControl(event) {
-    let smartButton = document.getElementById('smartButton')
-    if (controlled == 0) {
-        smartButton.style.backgroundColor='#FFFF88';
-		controlled = 1
-		socket.emit('controlOn');
-    } else if (controlled == 1) {
-        smartButton.style.backgroundColor='#88FF88';
-		controlled = 2
-		socket.emit('controlIsland');
-    } else {
-        smartButton.style.backgroundColor='#CCCCCC' ;
-		controlled = 0
-		socket.emit('controlOff');
-    }
-    return false;
+	const smartButton = event.currentTarget;
+	controlled = (controlled + 1) % gridModes.length;
+	const mode = gridModes[controlled];
+	const nextMode = gridModes[(controlled + 1) % gridModes.length];
+	smartButton.dataset.mode = mode.id;
+	smartButton.querySelector('.simulation-button-label').textContent = mode.label;
+	smartButton.setAttribute('aria-label', `Grid mode: ${mode.label}. Change to ${nextMode.label}.`);
+	gridModeHint.textContent = mode.hint;
+	gridModeHint.setAttribute('data-recent', '');
+	clearTimeout(gridModeHintTimeout);
+	gridModeHintTimeout = setTimeout(() => gridModeHint.removeAttribute('data-recent'), 2500);
+	socket.emit(mode.event);
+	return false;
 }
 
 /*

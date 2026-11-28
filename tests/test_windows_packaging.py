@@ -60,6 +60,55 @@ class WindowsPackagingTests(unittest.TestCase):
         self.assertNotIn("express", ignored)
         self.assertIn("__pycache__", ignored)
 
+    def test_publish_installer_replaces_generated_outputs_and_keeps_other_files(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            output = root / "build output"
+            dist = root / "dist"
+            output.mkdir()
+            dist.mkdir()
+            installer_name = "DEMKit Microgrid Setup 0.1.4.exe"
+            (output / installer_name).write_bytes(b"new installer")
+            (output / f"{installer_name}.blockmap").write_bytes(b"new block map")
+            for name in (
+                "DEMKit Microgrid Setup 0.1.3.exe",
+                "DEMKit Microgrid Prototype Setup 0.1.0.exe.blockmap",
+                "builder-debug.yml",
+                "builder-effective-config.yaml",
+                "teacher-notes.txt",
+            ):
+                (dist / name).write_bytes(b"existing file")
+            unpacked = dist / "win-unpacked"
+            unpacked.mkdir()
+            (unpacked / "app.exe").write_bytes(b"unpacked app")
+
+            with patch.object(builder, "DIST", dist):
+                result = builder.publish_installer(output)
+
+            self.assertEqual(result, dist / installer_name)
+            self.assertEqual(result.read_bytes(), b"new installer")
+            self.assertEqual({file.name for file in dist.iterdir()},
+                             {"teacher-notes.txt", installer_name})
+
+    def test_missing_or_empty_build_preserves_the_previous_installer(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            output = root / "build"
+            dist = root / "dist"
+            output.mkdir()
+            dist.mkdir()
+            previous = dist / "DEMKit Microgrid Setup 0.1.3.exe"
+            previous.write_bytes(b"working installer")
+
+            with patch.object(builder, "DIST", dist):
+                with self.assertRaises(RuntimeError):
+                    builder.publish_installer(output)
+                (output / "DEMKit Microgrid Setup 0.1.4.exe").touch()
+                with self.assertRaises(RuntimeError):
+                    builder.publish_installer(output)
+
+            self.assertEqual(previous.read_bytes(), b"working installer")
+
     def test_runtime_staging_includes_data_and_no_local_credentials(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
