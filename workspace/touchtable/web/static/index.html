@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Drag Drop Demo</title>
+    <title>DEMKit Microgrid</title>
+    <link rel="icon" type="image/png" href="images/saxion-logo.png">
     <!-- <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script> -->
 	
 	<link rel="stylesheet" type="text/css" href="css/index.css">
@@ -45,8 +46,17 @@
 	<div class="bg" id="bg"></div>
 	<canvas id="canvas">Your browser doesn't support canvas</canvas>
 	<div class="board" id="board">
-		<button type="button" id='playButton' class="uibutton noselect" onclick="return toggleSim(event)">&#9658;</button>
-		<button type="button" id='smartButton' class="uibutton noselect" onclick="return toggleControl(event)">&#9673;</button>
+		<button type="button" id="playButton" class="simulation-button" aria-label="Play simulation" onclick="return toggleSim(event)">
+			<span class="simulation-button-icon" aria-hidden="true">&#9654;</span>
+			<span class="simulation-button-label">Play</span>
+		</button>
+		<div class="grid-mode-control">
+			<button type="button" id="smartButton" class="simulation-button" data-mode="grid" aria-label="Grid mode: Grid. Change to Smart." aria-describedby="gridModeHint" onclick="return toggleControl(event)">
+				<span class="simulation-button-icon" aria-hidden="true">&#9889;&#65038;</span>
+				<span class="simulation-button-label">Grid</span>
+			</button>
+			<div class="grid-mode-hint" id="gridModeHint" role="tooltip"></div>
+		</div>
 	
 		<div id="house0" class="house" style="left:0px; top: 0px;"></div>
 		<div id="house1" class="house" style="left:675px; top: 0px;"></div>

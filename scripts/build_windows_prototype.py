@@ -1,4 +1,4 @@
-"""Build a *local, internal* Windows Electron + PyInstaller prototype.
+r"""Build a *local, internal* Windows Electron + PyInstaller prototype.
 
 Run from the repo root with:
     .\.venv\Scripts\python.exe scripts\build_windows_prototype.py
@@ -6,18 +6,24 @@ Run from the repo root with:
 Do not publish installers until rights holders approve redistribution.
 """
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
+from tempfile import TemporaryDirectory
 
 
 ROOT = Path(__file__).resolve().parents[1]
 WIN = ROOT / "packaging" / "windows"
 STAGING = WIN / ".build"
+DIST = WIN / "dist"
 RUNTIME = STAGING / "runtime"
 WEB_SRC = ROOT / "workspace" / "touchtable" / "web"
 ELECTRON = WIN / "electron"
 EXCLUDED = {"__pycache__", ".git", ".venv", "node_modules", "var", "stats", "cache"}
+INSTALLER_FILENAME = re.compile(
+    r"DEMKit Microgrid(?: Prototype)? Setup \d+\.\d+\.\d+[-+\w.]*\.exe"
+)
 
 
 def ignore_files(directory: str, names: list[str]) -> set[str]:
@@ -101,7 +107,30 @@ def build_python_backend() -> None:
         raise RuntimeError("PyInstaller did not produce demkit-backend.exe")
 
 
-def build_electron_installer() -> None:
+def publish_installer(output: Path) -> Path:
+    installers = [path for path in output.glob("*.exe") if path.is_file()]
+    if len(installers) != 1 or installers[0].stat().st_size == 0:
+        raise RuntimeError("Expected exactly one non-empty Windows installer from Electron.")
+
+    DIST.mkdir(exist_ok=True)
+    installer = installers[0]
+    destination = installer.replace(DIST / installer.name)
+
+    # Keep prior builds until the new installer has been generated and moved.
+    for artifact in DIST.iterdir():
+        if artifact == destination:
+            continue
+        if artifact.name == "win-unpacked" and artifact.is_dir() and not artifact.is_symlink():
+            shutil.rmtree(artifact)
+        elif artifact.is_file() and (
+            artifact.name in {"builder-debug.yml", "builder-effective-config.yaml"}
+            or INSTALLER_FILENAME.fullmatch(artifact.name.removesuffix(".blockmap"))
+        ):
+            artifact.unlink()
+    return destination
+
+
+def build_electron_installer() -> Path:
     # npm install generates the lockfile on the first build; afterwards npm ci
     # uses it so repeated local builds can be reproduced.
     npm = shutil.which("npm.cmd") or shutil.which("npm")
@@ -111,8 +140,11 @@ def build_electron_installer() -> None:
     lock = ELECTRON / "package-lock.json"
     subprocess.run([npm, "ci" if lock.is_file() else "install"],
                    cwd=str(ELECTRON), check=True)
-    subprocess.run([npx, "electron-builder", "--win", "nsis", "--x64",
-                    "--publish", "never"], cwd=str(ELECTRON), check=True)
+    with TemporaryDirectory(prefix="installer-", dir=STAGING) as output:
+        subprocess.run([npx, "electron-builder", "--win", "nsis", "--x64",
+                        "--publish", "never", f"-c.directories.output={output}"],
+                       cwd=str(ELECTRON), check=True)
+        return publish_installer(Path(output))
 
 
 def main() -> int:
@@ -123,8 +155,8 @@ def main() -> int:
         STAGING.mkdir(parents=True, exist_ok=True)
         prepare_runtime()
         build_python_backend()
-        build_electron_installer()
-        print("[Build] Prototype installer saved in packaging/windows/dist.", flush=True)
+        installer = build_electron_installer()
+        print(f"[Build] Windows installer saved to {installer.relative_to(ROOT)}.", flush=True)
         print("[Build] NOT verified on a clean machine; do not publish yet.", flush=True)
         return 0
     except (RuntimeError, subprocess.CalledProcessError, OSError) as error:

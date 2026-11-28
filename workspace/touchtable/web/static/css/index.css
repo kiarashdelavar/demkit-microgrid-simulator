@@ -262,12 +262,91 @@ body {
     display: none;
 }
 
+#playButton,
+#smartButton,
+.grid-mode-control {
+	position: absolute;
+	top: 510px;
+}
+
+#playButton,
+#smartButton {
+	width: 60px;
+	height: 60px;
+}
+
 .uibutton {
-    background-color: #cccccc;
+	background-color: #cccccc;
 	padding: 10px;
 	border: 1px solid black;
 	font-size: 30px;
 	transform: rotate(90deg);
+}
+
+.simulation-button {
+	display: grid;
+	align-content: center;
+	justify-items: center;
+	gap: 3px;
+	border: 1px solid #c8d3d7;
+	border-radius: 8px;
+	background: #f8fafb;
+	color: #142c35;
+	box-shadow: 0 2px 5px #0619233d;
+	font: 600 12px/1.2 "Segoe UI", sans-serif;
+	cursor: pointer;
+	touch-action: manipulation;
+	user-select: none;
+}
+
+.simulation-button:hover { filter: brightness(0.95); }
+.simulation-button:active { filter: brightness(0.88); }
+
+.simulation-button:focus-visible {
+	outline: 3px solid #005a9e;
+	outline-offset: 3px;
+}
+
+.simulation-button-icon { font-size: 19px; }
+
+#playButton { left: 50px; }
+#smartButton,
+.grid-mode-control { left: 210px; }
+
+.grid-mode-control #smartButton { position: static; }
+
+#playButton.simulation-button {
+	border-color: #006c5a;
+	background: #006c5a;
+	color: #fff;
+}
+
+#smartButton[data-mode="smart"] { background: #fff0bd; }
+#smartButton[data-mode="island"] { background: #d5f3e7; }
+
+.grid-mode-hint {
+	position: absolute;
+	top: calc(100% + 8px);
+	left: 0;
+	z-index: 1;
+	width: max-content;
+	max-width: 170px;
+	padding: 7px 10px;
+	border: 1px solid #aac0c8;
+	border-radius: 6px;
+	background: #142c35;
+	color: #fff;
+	font: 13px/1.35 "Segoe UI", sans-serif;
+	text-align: center;
+	pointer-events: none;
+	visibility: hidden;
+}
+
+#smartButton:focus-visible + .grid-mode-hint,
+.grid-mode-hint[data-recent] { visibility: visible; }
+
+@media (hover: hover) {
+	#smartButton:hover + .grid-mode-hint { visibility: visible; }
 }
 
 .settings {
@@ -285,24 +364,6 @@ body {
 	border-radius: 2px;
 }
 
-
-#playButton {
-	position: absolute;
-	top: 510px;
-	left: 50px;
-	width: 60px;
-	height: 60px;
-	text-align: center;
-}
-
-#smartButton {
-	position: absolute;
-	top: 510px;
-	left: 210px;
-	width: 60px;
-	height: 60px;
-	text-align: center;
-}
 
 #ffButton {
 	position: absolute;
